@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation History | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+    <link rel="stylesheet" href="css/history.css">
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html">ROOMS</a>
+            <a href="services.html">SERVICES</a>
+            <a href="gallery.html">GALLERY</a>
+            <a href="history.html" class="active">HISTORY</a>
+        </nav>
+        <div class="nav-auth">
+            <a href="login/login.html" class="btn-login">LOGIN</a>
+            <a href="#" class="btn-book-now">BOOK NOW</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="portal-container">
+        <h1 class="section-title">RESERVATION HISTORY</h1>
+        <p class="section-subtitle">Pantau status reservasi kamar aktif Anda, kelola jadwal kunjungan, serta unduh invoice resmi riwayat menginap Anda.</p>
+
+        <!-- FILTER TABS STATUS -->
+        <div class="history-filter-tabs">
+            <button class="history-tab active" data-status="all">ALL RESERVATIONS</button>
+            <button class="history-tab" data-status="confirmed">CONFIRMED / ACTIVE</button>
+            <button class="history-tab" data-status="completed">COMPLETED</button>
+            <button class="history-tab" data-status="cancelled">CANCELLED</button>
+        </div>
+
+        <!-- TABLE RIWAYAT -->
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>BOOKING CODE</th>
+                        <th>ROOM TYPE</th>
+                        <th>CHECK IN - OUT</th>
+                        <th>TOTAL PAID</th>
+                        <th>STATUS</th>
+                        <th style="text-align: center;">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Data 1: Confirmed -->
+                    <tr class="history-row" data-row-status="confirmed">
+                        <td><strong style="color: #141311;">#AMB-98321</strong></td>
+                        <td>Deluxe King Room (Fl. 1)</td>
+                        <td>28 Jun 2026 - 30 Jun 2026</td>
+                        <td>IDR 5,000,000</td>
+                        <td><span class="badge badge-confirmed">CONFIRMED</span></td>
+                        <td class="action-cells">
+                            <button class="btn-table-action btn-invoice" title="Lihat Detail Invoice"><i class="fas fa-file-invoice"></i></button>
+                            <button class="btn-table-action btn-cancel" title="Batalkan Reservasi"><i class="fas fa-calendar-times"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Data 2: Completed -->
+                    <tr class="history-row" data-row-status="completed">
+                        <td><strong style="color: #141311;">#AMB-91204</strong></td>
+                        <td>Executive Suite (Fl. 2)</td>
+                        <td>12 Mei 2026 - 13 Mei 2026</td>
+                        <td>IDR 5,800,000</td>
+                        <td><span class="badge badge-completed">COMPLETED</span></td>
+                        <td class="action-cells">
+                            <button class="btn-table-action btn-invoice" title="Lihat Detail Invoice"><i class="fas fa-file-invoice"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Data 3: Cancelled -->
+                    <tr class="history-row" data-row-status="cancelled">
+                        <td><strong style="color: #141311;">#AMB-87510</strong></td>
+                        <td>Presidential Suite (Fl. 3)</td>
+                        <td>01 Apr 2026 - 02 Apr 2026</td>
+                        <td>IDR 15,000,000</td>
+                        <td><span class="badge badge-cancelled">CANCELLED</span></td>
+                        <td class="action-cells">
+                            <button class="btn-table-action btn-invoice" style="opacity: 0.5; cursor: not-allowed;" disabled><i class="fas fa-file-invoice"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SCRIPT CALLER -->
+    <script src="js/guest.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>

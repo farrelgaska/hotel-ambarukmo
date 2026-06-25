@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Services & Hotline | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+        <!-- GANTI DARI href="#" MENJADI href="gallery.html" -->
+        <nav class="nav-menu">
+            <a href="dashboard.html">ROOMS</a>
+            <a href="services.html">SERVICES</a>
+            <a href="gallery.html">GALLERY</a> <!-- Pastiin jalurnya udah ke file-nya langsung -->
+            <a href="history.html">HISTORY</a>
+        </nav>
+        <div class="nav-auth">
+            <a href="login/login.html" class="btn-login">LOGIN</a>
+            <a href="#" class="btn-book-now">BOOK NOW</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="portal-container">
+        <h1 class="section-title">HOTEL SERVICES & HOTLINE</h1>
+        <p class="section-subtitle">Nikmati kenyamanan menginap yang sesungguhnya. Ajukan kebutuhan kamar Anda secara instan atau hubungi pusat layanan operator kami.</p>
+
+        <!-- GRID UTAMA -->
+        <div class="info-utility-grid" style="margin-bottom: 50px;">
+            
+            <!-- Card 1: Clean My Room -->
+            <div class="info-utility-card">
+                <div class="info-icon-box"><i class="fas fa-broom"></i></div>
+                <h4>Housekeeping</h4>
+                <p style="margin-bottom: 20px;">Layanan pembersihan, perapihan tempat tidur, dan penyegaran suasana kamar Anda.</p>
+                <button class="btn-card-action btn-service-request" data-service="Housekeeping">REQUEST CLEANING</button>
+            </div>
+
+            <!-- Card 2: Extra Amenities -->
+            <div class="info-utility-card">
+                <div class="info-icon-box"><i class="fas fa-concierge-bell"></i></div>
+                <h4>Extra Amenities</h4>
+                <p style="margin-bottom: 20px;">Butuh handuk tambahan, bantal ekstra, atau kelengkapan mandi ekstra di dalam kamar?</p>
+                <button class="btn-card-action btn-service-request" data-service="Extra Amenities">REQUEST AMENITIES</button>
+            </div>
+
+            <!-- Card 3: Laundry Service -->
+            <div class="info-utility-card">
+                <div class="info-icon-box"><i class="fas fa-tshirt"></i></div>
+                <h4>Express Laundry</h4>
+                <p style="margin-bottom: 20px;">Penjemputan pakaian kotor langsung ke kamar Anda dengan opsi cuci ekspres.</p>
+                <button class="btn-card-action btn-service-request" data-service="Express Laundry">REQUEST PICKUP</button>
+            </div>
+
+        </div>
+
+        <!-- CALL CENTER SECTION (DARK CONTRAST) -->
+        <div style="background: #141311; color: white; border-radius: 4px; padding: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px;">
+            <div>
+                <span style="color: var(--gold-brand); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; display: block; margin-bottom: 5px;">24/7 FRONT DESK HOTLINE</span>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 8px;">Butuh Bantuan Segera?</h2>
+                <p style="color: #888; font-size: 13px; max-width: 500px;">Dari telepon kamar Anda, silakan hubungi <strong style="color: #fff;">522-690-67</strong> untuk langsung terhubung ke petugas kami.</p>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <a href="https://wa.me/6287789484000" target="_blank" style="background: #25d366; color: white; text-decoration: none; padding: 15px 25px; font-size: 11px; font-weight: 700; letter-spacing: 1px; border-radius: 2px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fab fa-whatsapp" style="font-size: 16px;"></i> CHAT VIA WHATSAPP
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/guest.js"></script>
+
+    <!-- SCRIPT INTERAKTIF INSTAN -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const serviceButtons = document.querySelectorAll('.btn-service-request');
+
+            serviceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const serviceName = button.getAttribute('data-service');
+                    
+                    // Membuat custom toast mewah ala ambarukmo
+                    const toastHTML = `
+                    <div id="serviceToast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #141311; border: 1px solid #f3c356; color: #fff; padding: 15px 25px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 10000; display: flex; align-items: center; gap: 12px; font-family: 'Inter', sans-serif; transition: all 0.3s ease; opacity: 0; transform: translateX(-50%) translateY(-20px);">
+                        <i class="fas fa-bell" style="color: #f3c356; font-size: 16px;"></i> 
+                        <span style="font-weight: 500; font-size: 13px; letter-spacing: 0.5px;">Permintaan ${serviceName} berhasil dikirim ke petugas!</span>
+                    </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', toastHTML);
+                    
+                    const serviceToast = document.getElementById('serviceToast');
+                    setTimeout(() => { 
+                        serviceToast.style.opacity = '1'; 
+                        serviceToast.style.transform = 'translateX(-50%) translateY(0)';
+                    }, 50);
+
+                    // Hapus toast otomatis setelah 3 detik
+                    setTimeout(() => {
+                        serviceToast.style.opacity = '0';
+                        setTimeout(() => serviceToast.remove(), 300);
+                    }, 3000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

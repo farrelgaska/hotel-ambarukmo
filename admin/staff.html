@@ -32,8 +32,10 @@
         </ul>
         <div class="sidebar-bottom">
             <a href="#" class="bottom-link"><i class="far fa-question-circle"></i> HELP CENTER</a>
-            <a href="../login.html" class="bottom-link"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
-            <div class="user-profile">
+            <a href="login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </a>           
+                 <div class="user-profile">
                 <div class="avatar"><i class="far fa-user"></i></div>
                 <div class="user-info">
                     <span class="name">Admin User</span>
@@ -62,18 +64,15 @@
                 <button class="btn-filter" data-dept="Front Office">Front Office</button>
                 <button class="btn-filter" data-dept="Housekeeping">Housekeeping</button>
                 <button class="btn-filter" data-dept="Management">Management</button>
+                <button class="btn-filter" data-dept="Security">Security</button>
+                <button class="btn-filter" data-dept="Food & Beverage">Food & Beverage</button>
             </div>
             <div class="search-section">
                 <input type="text" id="searchStaff" class="search-box" placeholder="Search name or role..." style="color: #fff !important; background: transparent !important; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); outline: none;">
             </div>
         </div>
-
-        <!-- STAFF GRID -->
-        <div class="staff-grid" id="staffGrid">
-            <!-- Staff cards injected by JS -->
+            </main>
         </div>
-    </main>
-</div>
 
 <!-- MODAL ADD/EDIT STAFF -->
 <div id="modalStaff" class="modal-overlay hidden">

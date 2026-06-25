@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <div class="admin-login-container">
+        <a href="../guest/dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        </a>
+
+        <div class="admin-card">
+            <div class="admin-header">
+                <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="admin-logo">
+                <h2>HOTEL AMBARUKMO</h2>
+                <p>SISTEM MANAJEMEN INTERNAL (ADMINISTRATOR)</p>
+            </div>
+
+            <form id="formAdminLogin" class="admin-form">
+                <div class="form-group">
+                    <label>USERNAME / EMAIL</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" required placeholder="Masukkan username admin">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" required placeholder="Masukkan password">
+                    </div>
+                </div>
+
+                <div class="form-utility">
+                    <label class="remember-me">
+                        <input type="checkbox"> Ingat Saya
+                    </label>
+                    <a href="#" class="admin-link">Lupa Password?</a>
+                </div>
+
+                <button type="submit" class="btn-admin-submit">
+                    MASUK SISTEM <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </form>
+
+            <div class="admin-footer">
+                <p>Khusus Tamu? <a href="../guest/dashboard.html" class="admin-link">Pesan Kamar Langsung</a></p>
+            </div>
+        </div>
+    </div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const formAdminLogin = document.getElementById('formAdminLogin');
+            
+            if (formAdminLogin) {
+                formAdminLogin.addEventListener('submit', (e) => {
+                    e.preventDefault(); // Nahan refresh halaman bawaan form
+                    
+                    // Ubah kursor jadi loading biar premium
+                    document.body.style.cursor = "wait";
+                    
+                    // Langsung paksa pindah ke dashboard.html dalam 1 detik
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                });
+            } else {
+                console.error("Form dengan ID 'formAdminLogin' gak ketemu, cok!");
+            }
+        });
+    </script>
+</body>
+</html></body>
+</html>

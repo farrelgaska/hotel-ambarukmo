@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Gallery | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+    <link rel="stylesheet" href="css/gallery.css">
+</head>
+<body>
+
+    <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html">ROOMS</a>
+            <a href="services.html">SERVICES</a>
+            <a href="gallery.html" class="active">GALLERY</a>
+            <a href="history.html">HISTORY</a>
+        </nav>
+        <div class="nav-auth">
+            <a href="login/login.html" class="btn-login">LOGIN</a>
+            <a href="#" class="btn-book-now">BOOK NOW</a>
+        </div>
+    </header>
+
+    <div class="portal-container">
+        <h1 class="section-title">THE VISUAL GALLERY</h1>
+        <p class="section-subtitle">Saksikan kemegahan arsitektur heritage, fasilitas berkelas, serta kehangatan ruang istirahat eksklusif milik Hotel Ambarukmo.</p>
+
+        <!-- ================= FOTO UTAMA / HERO FEATURE ================= -->
+        <div class="gallery-hero-container">
+            <div class="gallery-hero-card">
+                <img src="../assets/gambarhotel.png" alt="Grand Hotel Ambarukmo Facade">
+                <div class="gallery-hero-badge">PREMIUM ARCHIVE</div>
+                <div class="gallery-hero-info">
+                    <h2>Grand Hotel Ambarukmo</h2>
+                    <p>Perpaduan sempurna antara kemegahan arsitektur klasik, ketenangan fasilitas premium, dan kenyamanan modern yang tak tertandingi.</p>
+                </div>
+            </div>  
+        </div>
+        
+        <div class="gallery-filter-tabs">
+            <button class="filter-tab active" data-filter="all">ALL ARCHIVES</button>
+            <button class="filter-tab" data-filter="rooms">ACCOMMODATIONS</button>
+            <button class="filter-tab" data-filter="facilities">FACILITIES</button>
+            <button class="filter-tab" data-filter="heritage">HERITAGE</button>
+            <button class="filter-tab" data-filter="events">EVENTS & MICE</button>
+        </div>
+
+        <div class="gallery-masonry-grid" id="galleryGrid">
+            <div class="gallery-item tall" data-category="rooms">
+                <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=600" alt="Deluxe King Bed">
+                <div class="gallery-item-overlay">
+                    <span>ROOMS</span>
+                    <h4>Deluxe King Suite</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="facilities">
+                <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=600" alt="Infinity Pool">
+                <div class="gallery-item-overlay">
+                    <span>FACILITIES</span>
+                    <h4>The Premium Pool</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item tall" data-category="heritage">
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600" alt="Hotel Architecture">
+                <div class="gallery-item-overlay">
+                    <span>HERITAGE</span>
+                    <h4>Main Palace Entrance</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="rooms">
+                <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=600" alt="Deluxe Twin Bed">
+                <div class="gallery-item-overlay">
+                    <span>ROOMS</span>
+                    <h4>Deluxe Twin Bed</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item tall" data-category="events">
+                <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=600" alt="Grand Ballroom">
+                <div class="gallery-item-overlay">
+                    <span>EVENTS</span>
+                    <h4>The Royal Ballroom</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="facilities">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600" alt="Luxury Spa">
+                <div class="gallery-item-overlay">
+                    <span>FACILITIES</span>
+                    <h4>The Royal Wellness Spa</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="heritage">
+                <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=600" alt="Classical Lounge">
+                <div class="gallery-item-overlay">
+                    <span>HERITAGE</span>
+                    <h4>Amarta Cultural Pavilion</h4>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="events">
+                <img src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=600" alt="Meeting Room">
+                <div class="gallery-item-overlay">
+                    <span>EVENTS</span>
+                    <h4>Executive VIP Meeting Room</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox-modal" id="lightboxModal">
+        <div class="lightbox-content">
+            <i class="fas fa-times lightbox-close" id="lightboxClose"></i>
+            <img src="" id="lightboxImage" alt="Enlarged Archive">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+
+    <script src="js/guest.js"></script>
+    <script src="js/gallery.js"></script>
+</body>
+</html>

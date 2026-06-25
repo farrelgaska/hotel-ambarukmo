@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Register | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/auth-guest.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="../../assets/logoambarukmo.png" alt="Logo" class="auth-logo">
+                <h2>DAFTAR AKUN</h2>
+                <p>Buat akun baru untuk menikmati kemudahan akses pemesanan kamar.</p>
+            </div>
+
+            <form id="formGuestRegister" class="auth-form">
+                <div class="form-group">
+                    <label>NAMA LENGKAP</label>
+                    <input type="text" id="regName" required placeholder="Budi Santoso">
+                </div>
+                <div class="form-group">
+                    <label>ALAMAT EMAIL</label>
+                    <input type="email" id="regEmail" required placeholder="budi@example.com">
+                </div>
+                <div class="form-group">
+                    <label>NOMOR HANDPHONE</label>
+                    <input type="tel" id="regPhone" required placeholder="081234567890">
+                </div>
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="regPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-auth-submit">REGISTRASI SEKARANG</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Sudah memiliki akun? <a href="login.html" class="auth-link">Masuk Disini</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth-guest.js"></script>
+</body>
+</html>

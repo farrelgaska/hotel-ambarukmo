@@ -1,0 +1,180 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('../../assets/gambarhotel.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.admin-login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 12px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #f3c356;
+}
+
+.admin-card {
+    background: #141311;
+    border: 1px solid #22211e;
+    padding: 40px 35px;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    border-top: 3px solid #f3c356;
+}
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.admin-logo {
+    height: 50px;
+    width: auto;
+    margin-bottom: 15px;
+}
+
+.admin-header h2 {
+    font-family: 'Playfair Display', serif;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.admin-header p {
+    color: #888888;
+    font-size: 11.5px;
+    line-height: 1.6;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 0.5px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 13px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 14px 14px 42px;
+    border: 1px solid #2a2925;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #fff;
+    background-color: #1a1916;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #f3c356;
+    box-shadow: 0 0 0 3px rgba(243, 195, 86, 0.1);
+}
+
+.form-utility {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.admin-link {
+    color: #bba26d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.admin-link:hover {
+    color: #f3c356;
+}
+
+.btn-admin-submit {
+    width: 100%;
+    background-color: #f3c356;
+    color: #000000;
+    border: none;
+    padding: 15px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 2px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-admin-submit:hover {
+    background-color: #e5b645;
+}
+
+.admin-footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed #22211e;
+    font-size: 12px;
+    color: #666;
+}

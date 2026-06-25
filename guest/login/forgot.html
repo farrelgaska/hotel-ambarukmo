@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/auth-guest.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="../../assets/logoambarukmo.png" alt="Logo" class="auth-logo">
+                <h2>PEMULIHAN AKUN</h2>
+                <p>Masukkan email terdaftar Anda. Sistem akan mengirimkan link untuk mengatur ulang password.</p>
+            </div>
+
+            <form id="formGuestForgot" class="auth-form">
+                <div class="form-group">
+                    <label>ALAMAT EMAIL TERDAFTAR</label>
+                    <input type="email" id="forgotEmail" required placeholder="budi@example.com">
+                </div>
+                <button type="submit" class="btn-auth-submit">KIRIM LINK PEMULIHAN</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Kembali ke halaman <a href="login.html" class="auth-link">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth-guest.js"></script>
+</body>
+</html>

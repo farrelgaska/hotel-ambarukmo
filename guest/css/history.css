@@ -1,0 +1,125 @@
+/* Filter Tabs */
+.history-filter-tabs {
+    display: flex;
+    gap: 15px;
+    margin: 30px 0 25px 0;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #eae9e6;
+    padding-bottom: 15px;
+}
+
+.history-tab {
+    background: none;
+    border: 1px solid transparent;
+    padding: 8px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-tab.active, .history-tab:hover {
+    color: #bba26d;
+    border-bottom: 2px solid #f3c356;
+}
+
+/* Table Design Premium */
+.history-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #eae9e6;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+}
+
+.history-table th {
+    background-color: #fbfbfa;
+    color: #505050;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eae9e6;
+    text-transform: uppercase;
+}
+
+.history-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f6f5f2;
+    color: #555555;
+    vertical-align: middle;
+}
+
+.history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badge Statuses */
+.badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.badge-confirmed {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.badge-completed {
+    background-color: rgba(142, 68, 173, 0.1);
+    color: #8e44ad;
+    border: 1px solid rgba(142, 68, 173, 0.2);
+}
+
+.badge-cancelled {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Actions Cell Styling */
+.action-cells {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-table-action {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    color: #555;
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-invoice:hover {
+    background: #141311;
+    color: #f3c356;
+    border-color: #141311;
+}
+
+.btn-cancel:hover {
+    background: #c0392b;
+    color: #ffffff;
+    border-color: #c0392b;
+}
