@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Ambarukmo | Accommodations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+</head>
+<body>
+
+   <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="active">ROOMS</a>
+            <a href="#">DINING</a>
+            <a href="#">GALLERY</a>
+            <a href="#">HISTORY</a>
+        </nav>
+        <div class="nav-auth">
+            <a href="#" class="btn-login">LOGIN</a>
+            <a href="#" class="btn-book-now">BOOK NOW</a>
+        </div>
+    </header>
+
+    <div class="portal-container">
+        
+        <section class="accommodations-section">
+            <h1 class="section-title">AVAILABLE ACCOMMODATIONS</h1>
+            <p class="section-subtitle">Experience uncompromising luxury steeped in history. Select your quarters below to begin the reservation process.</p>
+            
+            <!-- 4-COLUMN SYNCED ROOMS GRID -->
+            <div class="rooms-grid">
+                
+                <!-- CARD 1: DELUXE KING -->
+                <div class="room-premium-card">
+                    <div class="card-image-area img-deluxe-king">
+                        <span class="room-badge badge-available">AVAILABLE</span>
+                    </div>
+                    <div class="card-content-area">
+                        <div class="card-main-info">
+                            <h3>Deluxe King</h3>
+                            <div class="floor-text">FLOOR 1</div>
+                        </div>
+                        <div class="card-price">IDR 2.5M <span class="per-night">/NIGHT</span></div>
+                        <ul class="card-features">
+                            <li><i class="fas fa-bed"></i> 1 King Bed</li>
+                            <li><i class="fas fa-door-open"></i> Balcony View</li>
+                            <li><i class="fas fa-tv"></i> Smart TV & Minibar</li>
+                        </ul>
+                        <button class="btn-card-action">BOOK NOW</button>
+                    </div>
+                </div>
+
+                <!-- CARD 2: DELUXE TWIN -->
+                <div class="room-premium-card card-occupied">
+                    <div class="card-image-area img-deluxe-twin">
+                        <span class="room-badge badge-occupied">OCCUPIED</span>
+                    </div>
+                    <div class="card-content-area">
+                        <div class="card-main-info">
+                            <h3>Deluxe Twin</h3>
+                            <div class="floor-text">FLOOR 1</div>
+                        </div>
+                        <div class="card-price">IDR 2.5M <span class="per-night">/NIGHT</span></div>
+                        <ul class="card-features">
+                            <li><i class="fas fa-bed"></i> 2 Twin Beds</li>
+                            <li><i class="fas fa-door-open"></i> Garden View</li>
+                            <li><i class="fas fa-tv"></i> Smart TV & Minibar</li>
+                        </ul>
+                        <button class="btn-card-action btn-unavailable" disabled>UNAVAILABLE</button>
+                    </div>
+                </div>
+
+                <!-- CARD 3: EXECUTIVE SUITE -->
+                <div class="room-premium-card">
+                    <div class="card-image-area img-executive-suite">
+                        <span class="room-badge badge-available">AVAILABLE</span>
+                    </div>
+                    <div class="card-content-area">
+                        <div class="card-main-info">
+                            <h3>Executive Suite</h3>
+                            <div class="floor-text">FLOOR 2</div>
+                        </div>
+                        <div class="card-price">IDR 5.8M <span class="per-night">/NIGHT</span></div>
+                        <ul class="card-features">
+                            <li><i class="fas fa-bed"></i> 1 King Bed</li>
+                            <li><i class="fas fa-couch"></i> Separate Living Room</li>
+                            <li><i class="fas fa-hot-tub"></i> Luxury Soaking Tub</li>
+                        </ul>
+                        <button class="btn-card-action">BOOK NOW</button>
+                    </div>
+                </div>
+
+                <!-- CARD 4: PRESIDENTIAL SUITE -->
+                <div class="room-premium-card">
+                    <div class="card-image-area img-presidential-suite">
+                        <span class="room-badge badge-available">AVAILABLE</span>
+                    </div>
+                    <div class="card-content-area">
+                        <div class="card-main-info">
+                            <h3>Presidential Suite</h3>
+                            <div class="floor-text">FLOOR 3</div>
+                        </div>
+                        <div class="card-price">IDR 15.0M <span class="per-night">/NIGHT</span></div>
+                        <ul class="card-features">
+                            <li><i class="fas fa-crown"></i> Penthouse Layout</li>
+                            <li><i class="fas fa-swimming-pool"></i> Private Jacuzzi</li>
+                            <li><i class="fas fa-concierge-bell"></i> 24/7 Butler Service</li>
+                        </ul>
+                        <button class="btn-card-action">BOOK NOW</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+       <!-- SECTION 2: HOTEL INFORMATION & AMENITIES -->
+        <section class="hotel-info-section">
+            <h1 class="section-title">HOTEL INFORMATION & SERVICES</h1>
+            <p class="section-subtitle">Nikmati fasilitas kelas dunia dan pelayanan eksklusif yang dirancang khusus untuk kenyamanan menginap Anda.</p>
+            
+            <div class="info-utility-grid">
+                <!-- Card 1: Wi-Fi -->
+                <div class="info-utility-card">
+                    <div class="info-icon-box"><i class="fas fa-wifi"></i></div>
+                    <h4>High-Speed Wi-Fi</h4>
+                    <p>Tetap terhubung selama menginap. Hubungkan perangkat Anda ke jaringan <strong>@Ambarukmo_Premium</strong> tanpa perlu password.</p>
+                </div>
+
+                <!-- Card 2: Pool & Gym -->
+                <div class="info-utility-card">
+                    <div class="info-icon-box"><i class="fas fa-swimming-pool"></i></div>
+                    <h4>Pool & Wellness Center</h4>
+                    <p>Fasilitas kolam renang dan pusat kebugaran berada di Lantai 3. Buka setiap hari untuk tamu mulai pukul 06.00 - 21.00 WIB.</p>
+                </div>
+
+                <!-- Card 3: Dining -->
+                <div class="info-utility-card">
+                    <div class="info-icon-box"><i class="fas fa-utensils"></i></div>
+                    <h4>The Royal Dining</h4>
+                    <p>Sarapan prasmanan (*buffet*) disajikan setiap pagi di Amarta Restaurant (Lantai 1) mulai pukul 06.00 - 10.30 WIB.</p>
+                </div>
+
+                <!-- Card 4: Front Desk -->
+                <div class="info-utility-card">
+                    <div class="info-icon-box"><i class="fas fa-phone-alt"></i></div>
+                    <h4>24/7 Front Desk Help</h4>
+                    <p>Butuh layanan kamar, handuk tambahan, atau bantuan darurat? Hubungi operator langsung via telepon kamar di nomor <strong>0</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+         <div class="transition-overlay"></div>
+
+    <script src="js/guest.js"></script>
+</body>
+</html>

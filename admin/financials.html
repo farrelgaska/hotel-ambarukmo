@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financials | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js CDN untuk Grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Management</h2>
+            <p>HOTEL AMBARUKMO</p>
+        </div>
+        <div class="sidebar-action">
+            <button class="btn-gold-full"><i class="fas fa-plus"></i> NEW BOOKING</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> DASHBOARD</a></li>
+            <li><a href="reservation.html"><i class="far fa-calendar-alt"></i> RESERVATIONS</a></li>
+            <li><a href="room-status.html"><i class="fas fa-bed"></i> ROOM STATUS</a></li>
+            <li><a href="staff.html"><i class="fas fa-user-friends"></i> STAFF DIRECTORY</a></li>
+            <li class="active"><a href="financials.html"><i class="fas fa-wallet"></i> FINANCIALS</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> SETTINGS</a></li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a href="#" class="bottom-link"><i class="far fa-question-circle"></i> HELP CENTER</a>
+            <a href="../login.html" class="bottom-link"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
+            <div class="user-profile">
+                <div class="avatar"><i class="far fa-user"></i></div>
+                <div class="user-info">
+                    <span class="name">Admin User</span>
+                    <span class="role">MANAGER</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-titles">
+                <h1>Financial Overview</h1>
+                <p>Track revenue, expenses, and recent hotel transactions.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-outline-gold"><i class="fas fa-download"></i> EXPORT REPORT</button>
+            </div>
+        </header>
+
+        <!-- STATS CARDS -->
+        <div class="fin-stats-grid">
+            <div class="fin-stat-card">
+                <h3>Total Revenue <span class="badge-growth positive">+12.5%</span></h3>
+                <div class="fin-amount text-green">Rp 450.500.000</div>
+                <p>This Month</p>
+            </div>
+            <div class="fin-stat-card">
+                <h3>Total Expenses <span class="badge-growth negative">-2.4%</span></h3>
+                <div class="fin-amount text-red">Rp 120.000.000</div>
+                <p>This Month</p>
+            </div>
+            <div class="fin-stat-card">
+                <h3>Net Profit <span class="badge-growth positive">+15.2%</span></h3>
+                <div class="fin-amount text-gold">Rp 330.500.000</div>
+                <p>This Month</p>
+            </div>
+            <div class="fin-stat-card">
+                <h3>Pending Payments</h3>
+                <div class="fin-amount text-muted">Rp 15.000.000</div>
+                <p>12 Unsettled Invoices</p>
+            </div>
+        </div>
+
+        <!-- CHART SECTION -->
+        <div class="chart-container" style="margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 18px; color: #fff;">Revenue vs Expenses (YTD)</h2>
+                <select class="search-box" style="width: auto; padding: 5px 10px; background: transparent; color: white; border: 1px solid var(--border-color); outline: none; border-radius: 4px;">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <canvas id="financeChart" height="80"></canvas>
+        </div>
+
+        <!-- RECENT TRANSACTIONS TABLE -->
+        <div class="inventory-section">
+            <div class="section-header">
+                <h2 style="font-size: 18px;">Recent Transactions</h2>
+            </div>
+            <div class="table-container">
+                <table class="dark-table">
+                    <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>TRANSACTION ID</th>
+                            <th>DESCRIPTION</th>
+                            <th>TYPE</th>
+                            <th>AMOUNT</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trxTableBody">
+                        <!-- Di-inject dari JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL NEW BOOKING (GLOBAL - JANGAN DIHAPUS) -->
+<div id="modalNewBooking" class="modal-overlay hidden">
+    <!-- Isi Modal Booking (Pastikan lu copas full kode modal new booking lu di sini biar jalurnya nggak keputus) -->
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Create New Booking</h3>
+            <button class="close-modal-booking" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="formNewBooking">
+                <div class="form-group"><label>Guest Name</label><input type="text" id="newGuestName" required></div>
+                <div class="form-group"><label>Check-in Date</label><input type="date" id="newCheckin" required style="width:100%; padding:10px; background:#111; color:white; border:1px solid var(--border-color); color-scheme:dark;"></div>
+                <button type="submit" class="btn-gold-full" style="margin-top: 15px;">CREATE BOOKING</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="transition-overlay"></div>
+<script src="js/core.js"></script>
+<script src="js/financials.js"></script>
+</body>
+</html>

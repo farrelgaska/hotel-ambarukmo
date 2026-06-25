@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo Ambarukmo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+    </header>
+
+    <!-- SUCCESS RECEIPT CONTAINER -->
+    <div class="portal-container" style="max-width: 550px; text-align: center;">
+        
+        <!-- Animated Success Badge -->
+        <div style="margin-bottom: 25px;">
+            <i class="fas fa-check-circle" style="color: #f3c356; font-size: 64px; animation: pageFadeIn 0.6s ease;"></i>
+        </div>
+
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 28px; color: #141311; margin-bottom: 10px;">RESERVATION CONFIRMED</h1>
+        <p style="color: #666; font-size: 13px; line-height: 1.6; margin-bottom: 35px;">Terima kasih atas kepercayaan Anda. Pemesanan Anda telah terverifikasi aman di dalam sistem manajemen Hotel Ambarukmo. Simpan Reservation ID untuk Check-in.</p>
+
+        <!-- THE LUXURY RECEIPT CARD -->
+        <div style="background: #141311; color: white; border-radius: 4px; padding: 35px; text-align: left; box-shadow: 0 15px 35px rgba(0,0,0,0.15); position: relative; overflow: hidden; margin-bottom: 40px;">
+            
+            <!-- Ribbon hiasan pojok -->
+            <div style="position: absolute; top: 0; right: 0; background: #f3c356; color: #000; font-size: 9px; font-weight: 700; padding: 6px 20px; letter-spacing: 1px;">DUE AT CHECKOUT</div>
+
+            <div style="font-size: 11px; color: #888; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 20px; border-bottom: 1px solid #2a2a2a; padding-bottom: 12px;">E-RECEIPT / DETAIL RESERVASI</div>
+
+            <!-- Row 1: Booking ID -->
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px;">
+                <span style="color: #888;">RESERVATION ID</span>
+                <strong id="receiptID" style="color: #f3c356; letter-spacing: 0.5px;">#AMB-0000</strong>
+            </div>
+
+            <!-- Row 2: Guest Name -->
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px;">
+                <span style="color: #888;">NAMA TAMU</span>
+                <span id="receiptName" style="font-weight: 500;">-</span>
+            </div>
+
+            <!-- Row 3: Room Type -->
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px;">
+                <span style="color: #888;">TIPE KAMAR</span>
+                <span id="receiptRoom" style="font-weight: 500; color: #f3c356;">-</span>
+            </div>
+
+            <!-- Row 4: Dates -->
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px;">
+                <span style="color: #888;">MASA MENGINAP</span>
+                <span id="receiptDates" style="font-weight: 500;">-</span>
+            </div>
+
+            <!-- Row 5: Price Total -->
+            <div style="display: flex; justify-content: space-between; border-top: 1px dashed #333; padding-top: 18px; margin-top: 18px; font-size: 14px;">
+                <span style="color: #888; font-weight: 600;">TOTAL BIAYA</span>
+                <strong id="receiptPrice" style="color: #f3c356; font-size: 16px;">-</strong>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTON TO GO BACK -->
+        <a href="dashboard.html" class="btn-book-now" style="display: inline-block; width: 100%; padding: 16px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-decoration: none;">KEMBALI KE BERANDA</a>
+    </div>
+
+    <!-- SCRIPT PARSER PARAMETER -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Tangkap semua parameter URL operan dari booking.js
+            const bID = urlParams.get('id') || '#AMB-9921';
+            const rName = urlParams.get('room') || 'Deluxe King';
+            const rPrice = urlParams.get('price') || 'IDR 2.5M';
+            const gName = urlParams.get('name') || 'Budi Santoso';
+            const cIn = urlParams.get('checkin') || '2026-06-25';
+            const cOut = urlParams.get('checkout') || '2026-06-26';
+
+            // Format Tampilan Tanggal biar rapi (YYYY-MM-DD -> DD/MM/YYYY)
+            const formatDate = (dateStr) => {
+                if(!dateStr) return '-';
+                const parts = dateStr.split('-');
+                if(parts.length !== 3) return dateStr;
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            };
+
+            // Tembakkan data ke elemen HTML nota
+            document.getElementById('receiptID').textContent = bID;
+            document.getElementById('receiptName').textContent = gName;
+            document.getElementById('receiptRoom').textContent = rName;
+            document.getElementById('receiptDates').textContent = `${formatDate(cIn)} - ${formatDate(cOut)}`;
+            document.getElementById('receiptPrice').textContent = rPrice + ' (PAY AT CHECKOUT)';
+        });
+    </script>
+</body>
+</html>

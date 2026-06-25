@@ -1,0 +1,288 @@
+/* --- RESET & FONTS --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: #ffffff;
+    color: #333333;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- BRAND COLOR CONFIG --- */
+:root {
+    --gold-brand: #f3c356;
+    --dark-box: #141311;
+    --border-light: #dcdcdc;
+    --text-muted: #888888;
+}
+
+/* --- TOP NAVBAR LIGHT (WITH LUXURY LOGO) --- */
+.main-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 80px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+}
+.nav-logo {
+    display: flex;
+    align-items: center; /* Kunci biar logo bulat dan teks sejajar vertikal tengah */
+    gap: 12px;           /* Jarak manis antara lingkaran logo dengan teks */
+    font-family: 'Playfair Display', serif;
+    color: var(--gold-brand);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+.logo-icon {
+    height: 38px;        /* Tinggi ideal biar pas presisi di dalam area navbar */
+    width: auto;
+    object-fit: contain; /* Rasio lingkaran logo tetep sempurna anti-penyet */
+}
+.nav-menu { display: flex; gap: 40px; }
+.nav-menu a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    position: relative;
+    padding-bottom: 5px;
+}
+.nav-menu a.active { color: var(--gold-brand); }
+.nav-menu a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -21px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--gold-brand);
+}
+.nav-auth { display: flex; align-items: center; gap: 30px; }
+.btn-login { color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.btn-book-now {
+    background-color: var(--gold-brand);
+    color: #000000;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 2px;
+}
+
+/* --- CONTAINERS & HEADINGS --- */
+.portal-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold-brand);
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid #c8c8c8;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 600px;
+}
+
+/* --- ACCOMMODATIONS 4-COLUMNS GRID (SYNCED) --- */
+.accommodations-section { margin-bottom: 80px; }
+.rooms-grid {
+    display: grid;
+    /* Auto-fit 4 kolom responsif biar sejajar rapi */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* PREMIUM ROOM CARDS */
+.room-premium-card {
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+}
+.card-image-area {
+    height: 240px;
+    position: relative;
+    background-color: #222;
+    background-size: cover;
+    background-position: center;
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=600&auto=format&fit=crop');
+}
+.room-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 10px;
+    letter-spacing: 1px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 2px;
+}
+.badge-available { color: var(--gold-brand); border: 1px solid var(--gold-brand); }
+.badge-occupied { color: #b0914f; border: 1px solid #b0914f; }
+
+/* CARD FOOTER TEXT CONTAINER (DARK CONTRAST) */
+.card-content-area {
+    background-color: var(--dark-box);
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.card-main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+.card-content-area h3 {
+    font-family: 'Playfair Display', serif;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 500;
+}
+.floor-text { color: var(--text-muted); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+.card-price { color: var(--gold-brand); font-size: 16px; font-weight: 700; margin-bottom: 25px; }
+.card-price .per-night { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+
+.card-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+.card-features li {
+    color: #cccccc;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.card-features li i { color: var(--gold-brand); font-size: 12px; width: 14px; text-align: center; opacity: 0.8; }
+
+/* ACTION BUTTONS INSIDE CARD */
+.btn-card-action {
+    width: 100%;
+    background-color: var(--gold-brand);
+    color: #000000;
+    border: none;
+    padding: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: auto;
+    border-radius: 2px;
+    transition: 0.2s;
+}
+.btn-card-action:hover { background-color: #e5b645; }
+
+/* STYLE KHUSUS KAMAR OCCUPIED */
+.card-occupied .card-image-area {
+    filter: grayscale(1) brightness(0.7);
+}
+.btn-card-action.btn-unavailable {
+    background-color: transparent !important;
+    border: 1px solid #333333 !important;
+    color: var(--text-muted) !important;
+    cursor: not-allowed;
+}
+
+/* --- HOTEL INFORMATION & UTILITIES SECTION (REVISED) --- */
+.hotel-info-section {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+.info-utility-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 10px;
+}
+.info-utility-card {
+    background-color: #fafafa;
+    border: 1px solid var(--border-light);
+    padding: 30px 25px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+.info-utility-card:hover {
+    border-color: var(--gold-brand);
+    background-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+.info-icon-box {
+    color: var(--gold-brand);
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.info-utility-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: #141311;
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.info-utility-card p {
+    color: #666666;
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+/* --- RESPONSIVE LAYOUT BREAKPOINT --- */
+@media (max-width: 1000px) {
+    .rooms-grid { grid-template-columns: 1fr; }
+    .main-navbar { padding: 20px; }
+}
+
+/* ==========================================
+   --- PREMIUM PAGE TRANSITION LIGHT MODE ---
+   ========================================== */
+
+/* Tirai penutup layar saat berpindah halaman */
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff; /* Menggunakan warna putih sesuai tema light guest */
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Aktif saat tombol BOOK NOW dipicu */
+.transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Efek memantul halus ke atas saat halaman baru terbuka */
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Terapkan efek fade-in ke container utama */
+.portal-container {
+    animation: pageFadeIn 0.5s ease-out forwards;
+}

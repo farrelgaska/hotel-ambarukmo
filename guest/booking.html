@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Stay | Hotel Ambarukmo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/guest.css">
+</head>
+<body>
+    <div class="transition-overlay"></div>
+    
+    <header class="main-navbar">
+        <div class="nav-logo">
+            <img src="../assets/logoambarukmo.png" alt="Logo" class="logo-icon">
+            <span>HOTEL AMBARUKMO</span>
+        </div>
+        <div class="nav-auth">
+            <a href="dashboard.html" class="btn-login"><i class="fas fa-arrow-left"></i> KEMBALI</a>
+        </div>
+    </header>
+
+    <div class="portal-container" style="max-width: 600px;">
+        <section class="booking-form-section">
+            <h1 class="section-title">RESERVATION SUMMARY</h1>
+            <p class="section-subtitle">Selesaikan detail masa menginap Anda untuk mengunci kamar eksklusif ini di sistem.</p>
+            
+            <div style="background: #141311; color: white; padding: 30px; border-radius: 4px; margin-bottom: 30px; border-left: 4px solid var(--gold-brand);">
+                <span style="color: var(--gold-brand); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; display: block; margin-bottom: 5px;">KAMAR YANG DIPILIH</span>
+                <h2 id="targetRoomName" style="font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 5px;">Loading...</h2>
+                <p id="targetRoomPrice" style="color: var(--gold-brand); font-weight: 600; font-size: 15px;">Loading...</p>
+            </div>
+
+            <form id="formGuestSubmit" style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #505050; letter-spacing: 0.5px;">NAMA LENGKAP TAMU</label>
+                    <input type="text" required style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 2px; font-family: 'Inter', sans-serif;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 11px; font-weight: 700; color: #505050; letter-spacing: 0.5px;">TANGGAL CHECK-IN</label>
+                        <input type="date" required style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 2px;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label style="font-size: 11px; font-weight: 700; color: #505050; letter-spacing: 0.5px;">TANGGAL CHECK-OUT</label>
+                        <input type="date" required style="width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 2px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn-card-action" style="padding: 16px; margin-top: 15px;">PROSES BOOKING SEKARANG</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="js/booking.js"></script>
+</body>
+</html>
