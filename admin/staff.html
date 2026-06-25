@@ -32,8 +32,8 @@
         </ul>
         <div class="sidebar-bottom">
             <a href="#" class="bottom-link"><i class="far fa-question-circle"></i> HELP CENTER</a>
-            <a href="login.html" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            <a href="login.html" style="text-decoration: none !important; color: #a0a0a0 !important; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; padding: 12px 20px; transition: all 0.2s;" onmouseover="this.style.setProperty('color', '#f3c356', 'important')" onmouseout="this.style.setProperty('color', '#a0a0a0', 'important')">
+                <i class="fas fa-sign-out-alt" style="color: inherit !important; font-size: 14px;"></i> LOGOUT
             </a>           
                  <div class="user-profile">
                 <div class="avatar"><i class="far fa-user"></i></div>
@@ -46,33 +46,34 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <header class="top-header">
-            <div class="header-titles">
-                <h1>Staff Directory</h1>
-                <p>Manage hotel personnel, roles, and departmental access.</p>
-            </div>
-            <div class="header-actions">
-                <button id="btnAddStaff" class="btn-gold-full" style="width: auto; padding: 12px 20px;"><i class="fas fa-user-plus"></i> ADD STAFF</button>
-            </div>
-        </header>
+    <div class="main-content">
+    <div class="staff-header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div class="staff-title-block">
+            <h1 style="font-family: 'Playfair Display', serif; color: #fff; font-size: 32px; margin-bottom: 8px;">Staff Directory</h1>
+            <p style="color: #888; font-size: 14px;">Manage hotel personnel, roles, and departmental access.</p>
+        </div>
+        <button id="btnAddStaff" class="btn-add-staff" style="background: #f3c356; color: #000; border: none; padding: 12px 20px; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-user-plus"></i> ADD STAFF
+        </button>
+    </div>
 
-        <!-- FILTER & SEARCH -->
-        <div class="filter-search-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 15px; flex-wrap: wrap;">
-            <div class="filter-section" style="display: flex; gap: 10px;">
-                <button class="btn-filter active" data-dept="all">All Departments</button>
-                <button class="btn-filter" data-dept="Front Office">Front Office</button>
-                <button class="btn-filter" data-dept="Housekeeping">Housekeeping</button>
-                <button class="btn-filter" data-dept="Management">Management</button>
-                <button class="btn-filter" data-dept="Security">Security</button>
-                <button class="btn-filter" data-dept="Food & Beverage">Food & Beverage</button>
-            </div>
-            <div class="search-section">
-                <input type="text" id="searchStaff" class="search-box" placeholder="Search name or role..." style="color: #fff !important; background: transparent !important; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); outline: none;">
-            </div>
+    <div class="staff-filter-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
+        <div class="staff-filter-tabs" style="display: flex; gap: 10px;">
+            <button class="btn-filter active" data-dept="all">All Departments</button>
+            <button class="btn-filter" data-dept="Front Office">Front Office</button>
+            <button class="btn-filter" data-dept="Housekeeping">Housekeeping</button>
+            <button class="btn-filter" data-dept="Management">Management</button>
+            <button class="btn-filter" data-dept="Security">Security</button>
+            <button class="btn-filter" data-dept="Food & Beverage">Food & Beverage</button>
         </div>
-            </main>
+        <div class="search-box-wrapper" style="position: relative;">
+            <input type="text" id="searchStaff" placeholder="Search name or role..." style="background: #141311; border: 1px solid #2a2925; color: #fff; padding: 10px 15px; border-radius: 20px; font-size: 13px; width: 250px; outline: none;">
         </div>
+    </div>
+
+    <div id="staffGrid" class="staff-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+        </div>
+</div>
 
 <!-- MODAL ADD/EDIT STAFF -->
 <div id="modalStaff" class="modal-overlay hidden">
