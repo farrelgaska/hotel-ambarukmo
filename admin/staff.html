@@ -71,8 +71,11 @@
                 <input type="text" id="searchStaff" class="search-box" placeholder="Search name or role..." style="color: #fff !important; background: transparent !important; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); outline: none;">
             </div>
         </div>
-            </main>
-        </div>
+
+        <div id="staffGrid" class="staff-grid"></div>
+
+    </main>
+</div>
 
 <!-- MODAL ADD/EDIT STAFF -->
 <div id="modalStaff" class="modal-overlay hidden">
@@ -99,7 +102,7 @@
                         <option value="Housekeeping">Housekeeping</option>
                         <option value="Management">Management</option>
                         <option value="Security">Security</option>
-                        <option value="F&B">Food & Beverage</option>
+                        <option value="Food & Beverage">Food & Beverage</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -149,6 +152,8 @@
     </div>
 </div>
 <div class="transition-overlay"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/auth-guard.js" data-role="admin"></script>
 <script src="js/core.js"></script>
 <script src="js/staff.js"></script>
 </body>

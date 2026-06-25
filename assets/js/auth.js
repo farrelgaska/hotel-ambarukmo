@@ -1,45 +1,100 @@
+/**
+ * auth.js — Admin & Staff Login Handler
+ * Menggantikan login hardcoded dengan autentikasi via API backend.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
 
-    // 1. Fungsi Helper buat nampilin Toast Login yang elegan
-    function showLoginToast(message) {
-        const toastHTML = `
-        <div id="loginToast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #1a1a1a; border: 1px solid #f3c356; color: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; transition: opacity 0.3s ease; opacity: 0;">
-            <i class="fas fa-check-circle" style="color: #4caf50; font-size: 20px;"></i> 
-            <span style="font-weight: 500;">${message}</span>
-        </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', toastHTML);
-        
-        const loginToast = document.getElementById('loginToast');
-        setTimeout(() => { loginToast.style.opacity = '1'; }, 50);
-        document.body.style.cursor = "wait";
+    // Tampilkan pesan error dari auth-guard jika ada
+    const authError = sessionStorage.getItem('auth_error');
+    if (authError && typeof Toast !== 'undefined') {
+        Toast.error(authError);
+        sessionStorage.removeItem('auth_error');
     }
 
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const user = document.getElementById('username').value.toLowerCase();
-        const pass = document.getElementById('password').value;
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const submitBtn     = loginForm.querySelector('button[type="submit"]');
 
-        if (user === 'admin' && pass === 'admin123') {
-            showLoginToast('Login Berhasil sebagai Admin. Mengalihkan...');
-            setTimeout(() => { window.location.href = 'admin/dashboard.html'; }, 1500);
-        } 
-        else if (user === 'staff' && pass === 'staff123') {
-            showLoginToast('Login Berhasil sebagai Staff. Mengalihkan...');
-            setTimeout(() => { window.location.href = 'staff/dashboard.html'; }, 1500);
-        } 
-        else {
-            // Biar notif salahnya juga elegan, kita bikin versi merah
-            const errorToast = `
-            <div id="errorToast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #1a1a1a; border: 1px solid #f44336; color: #fff; padding: 15px 25px; border-radius: 8px; z-index: 10000; display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif;">
-                <i class="fas fa-exclamation-triangle" style="color: #f44336; font-size: 20px;"></i> 
-                <span>Username/Password Salah!</span>
-            </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', errorToast);
-            setTimeout(() => { document.getElementById('errorToast').remove(); }, 3000);
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username || !password) {
+            Toast.warning('Username dan password harus diisi.');
+            return;
+        }
+
+        // Disable form selama request berlangsung
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Authenticating...';
+        document.body.style.cursor = 'wait';
+
+        try {
+            const response = await AuthService.login({ username, password });
+
+            // Backend diharapkan mengembalikan: { token, refreshToken, user: { id, name, role } }
+            const { token, refreshToken, user } = response;
+            TokenService.setTokens(token, refreshToken, user);
+
+            const role = (user.role || '').toLowerCase();
+
+            if (typeof Toast !== 'undefined') {
+                Toast.success(`Login berhasil! Selamat datang, ${user.name || username}.`);
+            }
+
+            // Redirect berdasarkan role
+            setTimeout(() => {
+                const path = window.location.pathname;
+                if (role === 'admin' || role === 'manager') {
+                    window.location.href = path.includes('/admin/') ? 'dashboard.html' : 'admin/dashboard.html';
+                } else if (role === 'staff') {
+                    window.location.href = path.includes('/admin/') ? 'room-status.html' : 'admin/room-status.html';
+                } else {
+                    window.location.href = path.includes('/guest/') ? '../dashboard.html' : 'guest/dashboard.html';
+                }
+            }, 1200);
+
+        } catch (err) {
+            document.body.style.cursor = 'default';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'LOGIN';
+
+            if (typeof Toast !== 'undefined') {
+                Toast.error(err.message || 'Username atau password salah.');
+            } else {
+                // Fallback toast manual jika api.js belum load
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position:fixed;top:20px;left:50%;transform:translateX(-50%);
+                    background:#141311;border:1px solid #f44336;color:#fff;
+                    padding:14px 22px;border-radius:4px;z-index:10000;
+                    font-family:'Inter',sans-serif;font-size:13px;
+                `;
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle" style="color:#f44336;margin-right:8px;"></i>${err.message || 'Login gagal. Coba lagi.'}`;
+                document.body.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 3500);
+            }
+
+            // Shake animation pada form
+            loginForm.style.animation = 'none';
+            requestAnimationFrame(() => {
+                loginForm.style.animation = 'loginShake 0.4s ease';
+            });
         }
     });
+
+    // Inject shake keyframe
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `
+        @keyframes loginShake {
+            0%,100%{transform:translateX(0)}
+            20%,60%{transform:translateX(-8px)}
+            40%,80%{transform:translateX(8px)}
+        }
+    `;
+    document.head.appendChild(shakeStyle);
 });

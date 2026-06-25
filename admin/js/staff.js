@@ -1,70 +1,153 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const staffGrid = document.getElementById('staffGrid');
-    const filterBtns = document.querySelectorAll('.btn-filter'); // SINKRON: Pake .btn-filter bawaan HTML lu
-    const searchStaff = document.getElementById('searchStaff');
-    
-    // Modal Elements
-    const modalStaff = document.getElementById('modalStaff');
-    const formStaff = document.getElementById('formStaff');
-    const btnAddStaff = document.getElementById('btnAddStaff');
+/**
+ * staff.js — Admin Staff Directory
+ * CRUD staff via API. Filter dan search real-time.
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const staffGrid     = document.getElementById('staffGrid');
+    const filterBtns    = document.querySelectorAll('.btn-filter');
+    const searchStaff   = document.getElementById('searchStaff');
+    const modalStaff    = document.getElementById('modalStaff');
+    const formStaff     = document.getElementById('formStaff');
+    const btnAddStaff   = document.getElementById('btnAddStaff');
     const modalStaffTitle = document.getElementById('modalStaffTitle');
+    const modalConfirmDelete = document.getElementById('modalConfirmDelete');
+    const btnCancelDelete    = document.getElementById('btnCancelDelete');
+    const btnConfirmDelete   = document.getElementById('btnConfirmDelete');
+    const confirmDeleteText  = document.getElementById('confirmDeleteText');
 
-    // Data Dummy Staff (5 Departemen Lengkap)
-    let staffData = [
-        { name: 'Diana Putri', role: 'General Manager', dept: 'Management', status: 'Active' },
-        { name: 'Ahmad Reza', role: 'Front Desk Manager', dept: 'Front Office', status: 'Active' },
-        { name: 'Siti Sarah', role: 'Housekeeping Spv', dept: 'Housekeeping', status: 'On Leave' },
-        { name: 'Budi Santoso', role: 'Night Auditor', dept: 'Front Office', status: 'Active' },
-        { name: 'Rina Melati', role: 'Room Attendant', dept: 'Housekeeping', status: 'Active' },
-        { name: 'Bambang Perkasa', role: 'Chief Security', dept: 'Security', status: 'Active' },
-        { name: 'Siti Aminah', role: 'Head Chef', dept: 'Food & Beverage', status: 'Active' }
-    ];
-
+    let allStaff      = [];
     let currentFilter = 'all';
     let currentSearch = '';
+    let editingStaffId   = null;
+    let deletingStaffId  = null;
 
-    // Render Grid
+    // ==========================================
+    // --- LOAD STAFF ---
+    // ==========================================
+    async function loadStaff() {
+        if (!staffGrid) return;
+
+        staffGrid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#555;">
+                <i class="fas fa-circle-notch fa-spin" style="color:#f3c356;font-size:28px;display:block;margin-bottom:16px;"></i>
+                Memuat data staff...
+            </div>
+        `;
+
+        try {
+            const response = await StaffService.getAll();
+            allStaff = Array.isArray(response) ? response : (response.data || []);
+            renderStaff();
+        } catch (err) {
+            staffGrid.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#f44336;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:28px;display:block;margin-bottom:16px;"></i>
+                    ${err.message || 'Gagal memuat data staff.'}
+                    <br><button type="button" class="btn-retry-staff" style="margin-top:16px;background:#f3c356;color:#000;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;font-size:12px;">
+                        <i class="fas fa-redo"></i> Coba Lagi
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    // ==========================================
+    // --- RENDER GRID ---
+    // ==========================================
     function renderStaff() {
         if (!staffGrid) return;
-        staffGrid.innerHTML = '';
-        
-        staffData.forEach((staff, index) => {
-            // Filter Check
-            if (currentFilter !== 'all' && staff.dept !== currentFilter) return;
-            if (currentSearch && !staff.name.toLowerCase().includes(currentSearch.toLowerCase()) && !staff.role.toLowerCase().includes(currentSearch.toLowerCase())) return;
 
-            // Status Dot class
-            let dotClass = staff.status === 'Active' ? 'active' : staff.status === 'On Leave' ? 'leave' : 'inactive';
-            
-            // Icon dinamis berdasarkan 5 jenis department
-            let icon = 'fa-user-tie'; 
-            if (staff.dept === 'Housekeeping') icon = 'fa-broom';
-            if (staff.dept === 'Front Office') icon = 'fa-concierge-bell';
-            if (staff.dept === 'Security') icon = 'fa-shield-alt';
-            if (staff.dept === 'Food & Beverage') icon = 'fa-utensils';
+        const filtered = allStaff.filter(staff => {
+            const dept = staff.department || staff.dept || '';
+            if (currentFilter !== 'all' && dept !== currentFilter) return false;
+            if (currentSearch) {
+                const name = (staff.name || '').toLowerCase();
+                const role = ((staff.position || staff.role) || '').toLowerCase();
+                if (!name.includes(currentSearch.toLowerCase()) && !role.includes(currentSearch.toLowerCase())) return false;
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            staffGrid.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#555;">
+                    <i class="fas fa-users" style="font-size:28px;display:block;margin-bottom:16px;"></i>
+                    Tidak ada staff yang ditemukan.
+                </div>
+            `;
+            return;
+        }
+
+        // Pasang event di grid (event delegation) — sekali saja
+        staffGrid.innerHTML = '';
+        filtered.forEach(staff => {
+            const status  = staff.status || 'Active';
+            const dept    = staff.department || staff.dept || 'Management';
+            const dotClass = status === 'Active' ? 'active' : status === 'On Leave' ? 'leave' : 'inactive';
+
+            const iconMap = {
+                'Management':    'fa-user-tie',
+                'Front Office':  'fa-concierge-bell',
+                'Housekeeping':  'fa-broom',
+                'Security':      'fa-shield-alt',
+                'Food & Beverage': 'fa-utensils',
+            };
+            const icon = iconMap[dept] || 'fa-user-tie';
 
             const card = document.createElement('div');
             card.className = 'staff-card';
-            card.setAttribute('data-department', staff.dept); 
-            
+            card.setAttribute('data-department', dept);
+            card.setAttribute('data-id', staff.id);
             card.innerHTML = `
-                <div class="staff-status-dot ${dotClass}" title="${staff.status}"></div>
+                <div class="staff-status-dot ${dotClass}" title="${status}"></div>
                 <div class="staff-avatar-large"><i class="fas ${icon}"></i></div>
                 <div class="staff-info">
                     <h3>${staff.name}</h3>
-                    <div class="staff-role">${staff.role}</div>
-                    <div class="staff-dept-badge">${staff.dept}</div>
+                    <div class="staff-role">${staff.position || staff.role || 'Staff'}</div>
+                    <div class="staff-dept-badge">${dept}</div>
                 </div>
                 <div class="staff-card-actions">
-                    <button class="btn-staff-action edit" onclick="editStaff(${index})"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn-staff-action delete" onclick="deleteStaff(${index})"><i class="fas fa-trash"></i> Delete</button>
+                    <button class="btn-staff-action edit" data-id="${staff.id}">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn-staff-action delete" data-id="${staff.id}" data-name="${staff.name}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
                 </div>
             `;
             staffGrid.appendChild(card);
         });
     }
 
-    // Fungsi Real-time Search Input
+    if (staffGrid) {
+        staffGrid.addEventListener('click', handleStaffGridClick);
+    }
+
+    function handleStaffGridClick(e) {
+        const editBtn   = e.target.closest('.btn-staff-action.edit');
+        const deleteBtn = e.target.closest('.btn-staff-action.delete');
+
+        if (editBtn) {
+            const id    = editBtn.getAttribute('data-id');
+            const staff = allStaff.find(s => String(s.id) === String(id));
+            if (staff) openEditModal(staff);
+        }
+
+        if (deleteBtn) {
+            const id   = deleteBtn.getAttribute('data-id');
+            const name = deleteBtn.getAttribute('data-name');
+            deletingStaffId = id;
+            if (confirmDeleteText) {
+                confirmDeleteText.textContent = `Yakin ingin menghapus ${name} dari database?`;
+            }
+            if (modalConfirmDelete) modalConfirmDelete.classList.remove('hidden');
+        }
+    }
+
+    // ==========================================
+    // --- SEARCH & FILTER ---
+    // ==========================================
     if (searchStaff) {
         searchStaff.addEventListener('input', (e) => {
             currentSearch = e.target.value;
@@ -72,114 +155,138 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fungsi Filter Click Tabs
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             filterBtns.forEach(b => b.classList.remove('active'));
-            
-            // SINKRON: Mengamankan target click nyari .btn-filter terdekat
-            const currentTarget = e.target.closest('.btn-filter');
-            currentTarget.classList.add('active');
-            
-            currentFilter = currentTarget.getAttribute('data-dept');
+            const target = e.target.closest('.btn-filter');
+            target.classList.add('active');
+            currentFilter = target.getAttribute('data-dept') || 'all';
             renderStaff();
         });
     });
 
-    // BUKA MODAL ADD NEW STAFF
+    // ==========================================
+    // --- OPEN MODAL ADD ---
+    // ==========================================
     if (btnAddStaff) {
         btnAddStaff.addEventListener('click', () => {
-            modalStaffTitle.textContent = "Add New Staff";
-            formStaff.reset();
-            document.getElementById('staffIndex').value = ''; 
-            modalStaff.classList.remove('hidden');
+            editingStaffId = null;
+            if (modalStaffTitle) modalStaffTitle.textContent = 'Add New Staff';
+            if (formStaff) formStaff.reset();
+            const idxEl = document.getElementById('staffIndex');
+            if (idxEl) idxEl.value = '';
+            if (modalStaff) modalStaff.classList.remove('hidden');
         });
     }
 
-    // SIMPAN DATA (Handle Add Baru & Edit Existing)
+    function openEditModal(staff) {
+        editingStaffId = staff.id;
+        if (modalStaffTitle) modalStaffTitle.textContent = 'Edit Staff';
+
+        const idxEl = document.getElementById('staffIndex');
+        if (idxEl) idxEl.value = staff.id;
+
+        const nameEl   = document.getElementById('staffName');
+        const roleEl   = document.getElementById('staffRole');
+        const deptEl   = document.getElementById('staffDept');
+        const statusEl = document.getElementById('staffStatus');
+
+        if (nameEl)   nameEl.value   = staff.name;
+        if (roleEl)   roleEl.value   = staff.position || staff.role || '';
+        if (deptEl)   deptEl.value   = staff.department || staff.dept;
+        if (statusEl) statusEl.value = staff.status;
+
+        if (modalStaff) modalStaff.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // --- SAVE (ADD / EDIT) ---
+    // ==========================================
     if (formStaff) {
-        formStaff.addEventListener('submit', (e) => {
+        formStaff.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const index = document.getElementById('staffIndex').value;
-            const newStaff = {
-                name: document.getElementById('staffName').value,
-                role: document.getElementById('staffRole').value,
-                dept: document.getElementById('staffDept').value,
-                status: document.getElementById('staffStatus').value
+
+            const staffData = {
+                name:       document.getElementById('staffName').value.trim(),
+                position:   document.getElementById('staffRole').value.trim(),
+                department: document.getElementById('staffDept').value,
+                status:     document.getElementById('staffStatus').value,
             };
 
-            if (index === '') {
-                staffData.push(newStaff);
-                if (typeof showToast === "function") showToast("Staff baru berhasil ditambahkan!");
-            } else {
-                staffData[index] = newStaff;
-                if (typeof showToast === "function") showToast("Data staff berhasil diupdate!");
-            }
+            const submitBtn = formStaff.querySelector('button[type="submit"]');
+            const origText  = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
 
-            modalStaff.classList.add('hidden');
-            renderStaff();
+            try {
+                if (editingStaffId) {
+                    await StaffService.update(editingStaffId, staffData);
+                    Toast.success('Data staff berhasil diupdate!');
+                } else {
+                    await StaffService.create(staffData);
+                    Toast.success('Staff baru berhasil ditambahkan!');
+                }
+
+                if (modalStaff) modalStaff.classList.add('hidden');
+                loadStaff();
+
+            } catch (err) {
+                Toast.error(err.message || 'Gagal menyimpan data staff.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = origText;
+            }
         });
     }
 
-    // FUNGSI EDIT DATA
-    window.editStaff = function(index) {
-        if (!modalStaffTitle || !modalStaff) return;
-        
-        modalStaffTitle.textContent = "Edit Staff";
-        const staff = staffData[index];
-        
-        document.getElementById('staffIndex').value = index;
-        document.getElementById('staffName').value = staff.name;
-        document.getElementById('staffRole').value = staff.role;
-        document.getElementById('staffDept').value = staff.dept;
-        document.getElementById('staffStatus').value = staff.status;
-        
-        modalStaff.classList.remove('hidden');
-    };
-
-    // LOGIKA CUSTOM CONFIRMATION MODAL DELETE
-    const modalConfirmDelete = document.getElementById('modalConfirmDelete');
-    const btnCancelDelete = document.getElementById('btnCancelDelete');
-    const btnConfirmDelete = document.getElementById('btnConfirmDelete');
-    const confirmDeleteText = document.getElementById('confirmDeleteText');
-    let staffIndexToDelete = null; 
-
-    window.deleteStaff = function(index) {
-        if (!modalConfirmDelete || !confirmDeleteText) return;
-        staffIndexToDelete = index; 
-        confirmDeleteText.textContent = `Yakin ingin menghapus ${staffData[index].name} dari database?`;
-        modalConfirmDelete.classList.remove('hidden'); 
-    };
-
+    // ==========================================
+    // --- DELETE STAFF ---
+    // ==========================================
     if (btnCancelDelete) {
         btnCancelDelete.addEventListener('click', () => {
-            modalConfirmDelete.classList.add('hidden');
-            staffIndexToDelete = null; 
+            if (modalConfirmDelete) modalConfirmDelete.classList.add('hidden');
+            deletingStaffId = null;
         });
     }
 
     if (btnConfirmDelete) {
-        btnConfirmDelete.addEventListener('click', () => {
-            if (staffIndexToDelete !== null) {
-                staffData.splice(staffIndexToDelete, 1);
-                renderStaff(); 
-                
-                modalConfirmDelete.classList.add('hidden');
-                staffIndexToDelete = null; 
-                
-                if (typeof showToast === "function") showToast("Data staff berhasil dihapus!");
+        btnConfirmDelete.addEventListener('click', async () => {
+            if (!deletingStaffId) return;
+
+            btnConfirmDelete.disabled = true;
+            btnConfirmDelete.textContent = 'Menghapus...';
+
+            try {
+                await StaffService.delete(deletingStaffId);
+                if (modalConfirmDelete) modalConfirmDelete.classList.add('hidden');
+                Toast.success('Data staff berhasil dihapus!');
+                deletingStaffId = null;
+                loadStaff();
+            } catch (err) {
+                Toast.error(err.message || 'Gagal menghapus staff.');
+            } finally {
+                btnConfirmDelete.disabled = false;
+                btnConfirmDelete.textContent = 'Hapus';
             }
         });
     }
 
-    // Tombol Close Silang Modal Staff
-    const closeStaffModalBtn = document.querySelector('.close-modal-staff');
-    if (closeStaffModalBtn) {
-        closeStaffModalBtn.addEventListener('click', () => {
-            modalStaff.classList.add('hidden');
+    // Close modal staff
+    const closeStaffBtn = document.querySelector('.close-modal-staff');
+    if (closeStaffBtn) {
+        closeStaffBtn.addEventListener('click', () => {
+            if (modalStaff) modalStaff.classList.add('hidden');
         });
     }
 
-    renderStaff(); 
+    // ==========================================
+    // --- INIT ---
+    // ==========================================
+    if (staffGrid) {
+        staffGrid.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-retry-staff')) loadStaff();
+        });
+    }
+
+    loadStaff();
 });

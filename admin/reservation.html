@@ -76,28 +76,7 @@
                         </tr>
                     </thead>
                     <tbody id="resTableBody">
-                        <tr>
-                            <td class="gold-text bold">#RES-001</td>
-                            <td>Budi Santoso</td>
-                            <td>24 Jun 2026</td>
-                            <td>26 Jun 2026</td>
-                            <td><span class="status available">• CONFIRMED</span></td>
-                            <td>
-                                <button class="btn-action btn-checkin" data-action="checkin">Check-in</button>
-                                <button class="btn-action-edit" data-action="edit" title="Edit Booking"><i class="fas fa-edit"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="gold-text bold">#RES-002</td>
-                            <td>Siti Aminah</td>
-                            <td>25 Jun 2026</td>
-                            <td>27 Jun 2026</td>
-                            <td><span class="status occupied">• OCCUPIED</span></td>
-                            <td>
-                                <button class="btn-action btn-checkout" data-action="checkout">Check-out</button>
-                                <button class="btn-action-edit" data-action="edit" title="Edit Booking"><i class="fas fa-edit"></i></button>
-                            </td>
-                        </tr>
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:#555;">Memuat data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -129,7 +108,8 @@
                     <label>Status</label>
                     <select id="editResStatus" style="width: 100%; padding: 10px; background: #111; border: 1px solid var(--border-color); color: white; border-radius: 4px; outline: none;" required>
                         <option value="CONFIRMED">CONFIRMED</option>
-                        <option value="OCCUPIED">OCCUPIED</option>
+                        <option value="CHECKED_IN">CHECKED IN</option>
+                        <option value="CHECKED_OUT">CHECKED OUT</option>
                         <option value="CANCELLED">CANCELLED</option>
                     </select>
                 </div>
@@ -174,6 +154,8 @@
     </div>
 </div>
 <div class="transition-overlay"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/auth-guard.js" data-role="admin,staff"></script>
 <script src="js/core.js"></script>
 <script src="js/reservation.js"></script>
 </body>

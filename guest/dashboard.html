@@ -35,89 +35,9 @@
             <h1 class="section-title">AVAILABLE ACCOMMODATIONS</h1>
             <p class="section-subtitle">Experience uncompromising luxury steeped in history. Select your quarters below to begin the reservation process.</p>
             
-            <!-- 4-COLUMN SYNCED ROOMS GRID -->
+            <!-- Rooms loaded dynamically from API -->
             <div class="rooms-grid">
-                
-                <!-- CARD 1: DELUXE KING -->
-                <div class="room-premium-card">
-                    <div class="card-image-area img-deluxe-king">
-                        <span class="room-badge badge-available">AVAILABLE</span>
-                    </div>
-                    <div class="card-content-area">
-                        <div class="card-main-info">
-                            <h3>Deluxe King</h3>
-                            <div class="floor-text">FLOOR 1</div>
-                        </div>
-                        <div class="card-price">IDR 2.5M <span class="per-night">/NIGHT</span></div>
-                        <ul class="card-features">
-                            <li><i class="fas fa-bed"></i> 1 King Bed</li>
-                            <li><i class="fas fa-door-open"></i> Balcony View</li>
-                            <li><i class="fas fa-tv"></i> Smart TV & Minibar</li>
-                        </ul>
-                        <button class="btn-card-action">BOOK NOW</button>
-                    </div>
-                </div>
-
-                <!-- CARD 2: DELUXE TWIN -->
-                <div class="room-premium-card card-occupied">
-                    <div class="card-image-area img-deluxe-twin">
-                        <span class="room-badge badge-occupied">OCCUPIED</span>
-                    </div>
-                    <div class="card-content-area">
-                        <div class="card-main-info">
-                            <h3>Deluxe Twin</h3>
-                            <div class="floor-text">FLOOR 1</div>
-                        </div>
-                        <div class="card-price">IDR 2.5M <span class="per-night">/NIGHT</span></div>
-                        <ul class="card-features">
-                            <li><i class="fas fa-bed"></i> 2 Twin Beds</li>
-                            <li><i class="fas fa-door-open"></i> Garden View</li>
-                            <li><i class="fas fa-tv"></i> Smart TV & Minibar</li>
-                        </ul>
-                        <button class="btn-card-action btn-unavailable" disabled>UNAVAILABLE</button>
-                    </div>
-                </div>
-
-                <!-- CARD 3: EXECUTIVE SUITE -->
-                <div class="room-premium-card">
-                    <div class="card-image-area img-executive-suite">
-                        <span class="room-badge badge-available">AVAILABLE</span>
-                    </div>
-                    <div class="card-content-area">
-                        <div class="card-main-info">
-                            <h3>Executive Suite</h3>
-                            <div class="floor-text">FLOOR 2</div>
-                        </div>
-                        <div class="card-price">IDR 5.8M <span class="per-night">/NIGHT</span></div>
-                        <ul class="card-features">
-                            <li><i class="fas fa-bed"></i> 1 King Bed</li>
-                            <li><i class="fas fa-couch"></i> Separate Living Room</li>
-                            <li><i class="fas fa-hot-tub"></i> Luxury Soaking Tub</li>
-                        </ul>
-                        <button class="btn-card-action">BOOK NOW</button>
-                    </div>
-                </div>
-
-                <!-- CARD 4: PRESIDENTIAL SUITE -->
-                <div class="room-premium-card">
-                    <div class="card-image-area img-presidential-suite">
-                        <span class="room-badge badge-available">AVAILABLE</span>
-                    </div>
-                    <div class="card-content-area">
-                        <div class="card-main-info">
-                            <h3>Presidential Suite</h3>
-                            <div class="floor-text">FLOOR 3</div>
-                        </div>
-                        <div class="card-price">IDR 15.0M <span class="per-night">/NIGHT</span></div>
-                        <ul class="card-features">
-                            <li><i class="fas fa-crown"></i> Penthouse Layout</li>
-                            <li><i class="fas fa-swimming-pool"></i> Private Jacuzzi</li>
-                            <li><i class="fas fa-concierge-bell"></i> 24/7 Butler Service</li>
-                        </ul>
-                        <button class="btn-card-action">BOOK NOW</button>
-                    </div>
-                </div>
-
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#888;">Memuat kamar...</div>
             </div>
         </section>
 
@@ -153,6 +73,7 @@
     </div>
          <div class="transition-overlay"></div>
 
+    <script src="../assets/js/api.js"></script>
     <script src="js/guest.js"></script>
 </body>
 </html>

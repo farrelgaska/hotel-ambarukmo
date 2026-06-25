@@ -11,8 +11,8 @@
 <body>
 
     <div class="admin-login-container">
-        <a href="../guest/dashboard.html" class="back-link">
-            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        <a href="../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Kembali ke Portal
         </a>
 
         <div class="admin-card">
@@ -22,12 +22,12 @@
                 <p>SISTEM MANAJEMEN INTERNAL (ADMINISTRATOR)</p>
             </div>
 
-            <form id="formAdminLogin" class="admin-form">
+            <form id="loginForm" class="admin-form">
                 <div class="form-group">
-                    <label>USERNAME / EMAIL</label>
+                    <label>USERNAME</label>
                     <div class="input-wrapper">
                         <i class="fas fa-user"></i>
-                        <input type="text" required placeholder="Masukkan username admin">
+                        <input type="text" id="username" required placeholder="admin">
                     </div>
                 </div>
                 
@@ -35,15 +35,8 @@
                     <label>PASSWORD</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" required placeholder="Masukkan password">
+                        <input type="password" id="password" required placeholder="admin123">
                     </div>
-                </div>
-
-                <div class="form-utility">
-                    <label class="remember-me">
-                        <input type="checkbox"> Ingat Saya
-                    </label>
-                    <a href="#" class="admin-link">Lupa Password?</a>
                 </div>
 
                 <button type="submit" class="btn-admin-submit">
@@ -52,32 +45,13 @@
             </form>
 
             <div class="admin-footer">
-                <p>Khusus Tamu? <a href="../guest/dashboard.html" class="admin-link">Pesan Kamar Langsung</a></p>
+                <p>Demo Admin: <strong>admin / admin123</strong> | Staff: <strong>staff / staff123</strong></p>
+                <p>Khusus Tamu? <a href="../guest/login/login.html" class="admin-link">Portal Guest</a></p>
             </div>
         </div>
     </div>
 
-<script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const formAdminLogin = document.getElementById('formAdminLogin');
-            
-            if (formAdminLogin) {
-                formAdminLogin.addEventListener('submit', (e) => {
-                    e.preventDefault(); // Nahan refresh halaman bawaan form
-                    
-                    // Ubah kursor jadi loading biar premium
-                    document.body.style.cursor = "wait";
-                    
-                    // Langsung paksa pindah ke dashboard.html dalam 1 detik
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1000);
-                });
-            } else {
-                console.error("Form dengan ID 'formAdminLogin' gak ketemu, cok!");
-            }
-        });
-    </script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
 </body>
-</html></body>
 </html>

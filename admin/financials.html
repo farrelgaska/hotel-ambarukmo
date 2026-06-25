@@ -63,7 +63,7 @@
         <div class="fin-stats-grid">
             <div class="fin-stat-card">
                 <h3>Total Revenue <span class="badge-growth positive">+12.5%</span></h3>
-                <div class="fin-amount text-green">Rp 450.500.000</div>
+                <div class="fin-amount text-green" data-fin="totalRevenue">Rp 0</div>
                 <p>This Month</p>
             </div>
             <div class="fin-stat-card">
@@ -78,8 +78,8 @@
             </div>
             <div class="fin-stat-card">
                 <h3>Pending Payments</h3>
-                <div class="fin-amount text-muted">Rp 15.000.000</div>
-                <p>12 Unsettled Invoices</p>
+                <div class="fin-amount text-muted" data-fin="totalTransactions">0</div>
+                <p>Total Reservations</p>
             </div>
         </div>
 
@@ -140,6 +140,8 @@
 </div>
 
 <div class="transition-overlay"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/auth-guard.js" data-role="admin"></script>
 <script src="js/core.js"></script>
 <script src="js/financials.js"></script>
 </body>

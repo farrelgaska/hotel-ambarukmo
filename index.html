@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Ambarukmo | Management & Guest Portal</title>
+    <meta name="description" content="Hotel Ambarukmo — Sistem reservasi hotel premium. Login sebagai admin, staff, atau tamu.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <style>
+        :root {
+            --gold: #f3c356;
+            --bg-dark: #0a0908;
+            --bg-panel: #141311;
+            --text-muted: #888;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-dark);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background subtle pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(243,195,86,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 80% at 90% 100%, rgba(243,195,86,0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .landing-container {
+            text-align: center;
+            padding: 40px 20px;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .landing-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+
+        .brand-line {
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .landing-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .landing-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 400px;
+            margin: 0 auto 48px;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .portal-card {
+            background: var(--bg-panel);
+            border: 1px solid #2a2a2a;
+            border-top: 2px solid transparent;
+            border-radius: 4px;
+            padding: 32px 24px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(243,195,86,0.06) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .portal-card:hover {
+            border-top-color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .portal-card:hover::before { opacity: 1; }
+
+        .portal-card .card-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(243,195,86,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .portal-card:hover .card-icon { transform: scale(1.1); }
+
+        .portal-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .portal-card p {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .portal-card .card-arrow {
+            color: var(--gold);
+            font-size: 12px;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s;
+        }
+
+        .portal-card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: #2a2a2a;
+            margin: 40px auto;
+        }
+
+        .footer-text {
+            font-size: 11px;
+            color: #444;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="landing-container">
+        <img src="assets/logoambarukmo.png" alt="Logo Hotel Ambarukmo" class="landing-logo"
+             onerror="this.style.display='none'">
+
+        <div class="brand-line">YOGYAKARTA, INDONESIA</div>
+        <h1 class="landing-title">Hotel Ambarukmo</h1>
+        <p class="landing-subtitle">Sistem manajemen dan reservasi terpadu. Pilih portal yang sesuai dengan peran Anda untuk melanjutkan.</p>
+
+        <div class="portal-grid">
+            <!-- Admin Portal -->
+            <a href="admin/login.html" class="portal-card" id="portalAdmin">
+                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Admin</h3>
+                <p>Manajemen penuh: reservasi, kamar, staff, dan laporan keuangan.</p>
+                <span class="card-arrow"><i class="fas fa-arrow-right"></i> Masuk</span>
+            </a>
+
+            <!-- Staff Portal -->
+            <a href="admin/login.html" class="portal-card" id="portalStaff">
+                <div class="card-icon"><i class="fas fa-concierge-bell"></i></div>
+                <h3>Staff</h3>
+                <p>Akses operasional: check-in, check-out, dan status kamar real-time.</p>
+                <span class="card-arrow"><i class="fas fa-arrow-right"></i> Masuk</span>
+            </a>
+
+            <!-- Guest Portal -->
+            <a href="guest/dashboard.html" class="portal-card" id="portalGuest">
+                <div class="card-icon"><i class="fas fa-user-circle"></i></div>
+                <h3>Tamu</h3>
+                <p>Reservasi kamar, lihat layanan eksklusif, dan kelola riwayat menginap.</p>
+                <span class="card-arrow"><i class="fas fa-arrow-right"></i> Masuk</span>
+            </a>
+        </div>
+
+        <div class="divider"></div>
+        <p class="footer-text">&copy; 2026 HOTEL AMBARUKMO &mdash; ALL RIGHTS RESERVED</p>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script>
+        // Auto-redirect jika sudah login
+        document.addEventListener('DOMContentLoaded', () => {
+            if (TokenService.isLoggedIn()) {
+                const role = (TokenService.getUserRole() || '').toLowerCase();
+                if (role === 'admin' || role === 'manager') {
+                    window.location.href = 'admin/dashboard.html';
+                } else if (role === 'staff') {
+                    window.location.href = 'staff/dashboard.html';
+                } else if (role === 'guest') {
+                    window.location.href = 'guest/dashboard.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

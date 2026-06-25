@@ -56,48 +56,14 @@
                     </tr>
                 </thead>
                 <tbody id="historyTableBody">
-                    <!-- Data 1: Confirmed -->
-                    <tr class="history-row" data-row-status="confirmed">
-                        <td><strong style="color: #141311;">#AMB-98321</strong></td>
-                        <td>Deluxe King Room (Fl. 1)</td>
-                        <td>28 Jun 2026 - 30 Jun 2026</td>
-                        <td>IDR 5,000,000</td>
-                        <td><span class="badge badge-confirmed">CONFIRMED</span></td>
-                        <td class="action-cells">
-                            <button class="btn-table-action btn-invoice" title="Lihat Detail Invoice"><i class="fas fa-file-invoice"></i></button>
-                            <button class="btn-table-action btn-cancel" title="Batalkan Reservasi"><i class="fas fa-calendar-times"></i></button>
-                        </td>
-                    </tr>
-
-                    <!-- Data 2: Completed -->
-                    <tr class="history-row" data-row-status="completed">
-                        <td><strong style="color: #141311;">#AMB-91204</strong></td>
-                        <td>Executive Suite (Fl. 2)</td>
-                        <td>12 Mei 2026 - 13 Mei 2026</td>
-                        <td>IDR 5,800,000</td>
-                        <td><span class="badge badge-completed">COMPLETED</span></td>
-                        <td class="action-cells">
-                            <button class="btn-table-action btn-invoice" title="Lihat Detail Invoice"><i class="fas fa-file-invoice"></i></button>
-                        </td>
-                    </tr>
-
-                    <!-- Data 3: Cancelled -->
-                    <tr class="history-row" data-row-status="cancelled">
-                        <td><strong style="color: #141311;">#AMB-87510</strong></td>
-                        <td>Presidential Suite (Fl. 3)</td>
-                        <td>01 Apr 2026 - 02 Apr 2026</td>
-                        <td>IDR 15,000,000</td>
-                        <td><span class="badge badge-cancelled">CANCELLED</span></td>
-                        <td class="action-cells">
-                            <button class="btn-table-action btn-invoice" style="opacity: 0.5; cursor: not-allowed;" disabled><i class="fas fa-file-invoice"></i></button>
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" style="text-align:center;padding:40px;color:#888;">Memuat riwayat reservasi...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- SCRIPT CALLER -->
+    <script src="../assets/js/api.js"></script>
     <script src="js/guest.js"></script>
     <script src="js/history.js"></script>
 </body>
