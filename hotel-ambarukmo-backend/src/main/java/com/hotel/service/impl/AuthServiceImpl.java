@@ -1,7 +1,17 @@
 package com.hotel.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.hotel.abstracts.User;
-import com.hotel.dto.*;
+import com.hotel.dto.AuthRequestDTO;
+import com.hotel.dto.AuthResponseDTO;
+import com.hotel.dto.ChangePasswordRequestDTO;
+import com.hotel.dto.ForgotPasswordRequestDTO;
+import com.hotel.dto.RefreshTokenRequestDTO;
+import com.hotel.dto.RegisterRequestDTO;
+import com.hotel.dto.UserDTO;
 import com.hotel.entity.Guest;
 import com.hotel.exception.BadRequestException;
 import com.hotel.exception.ResourceNotFoundException;
@@ -10,10 +20,15 @@ import com.hotel.mapper.UserMapper;
 import com.hotel.repository.UserRepository;
 import com.hotel.security.JwtService;
 import com.hotel.service.interfaces.AuthService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
+/**
+ * AuthServiceImpl
+ *
+ * FIX [M4]: Diupdate untuk menggunakan Optional<User> dari UserRepository.
+ * Menggantikan pola "findByX() lalu cek null" dengan Optional API yang lebih aman.
+ */
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -28,8 +43,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO login(AuthRequestDTO request) {
-        User user = userRepository.findByUsername(request.getUsername());
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        // FIX [M4]: Gunakan Optional — tidak ada lagi null check manual
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid username or password");
         }
         return buildAuthResponse(user);
@@ -37,11 +55,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO registerGuest(RegisterRequestDTO request) {
-        if (userRepository.findByUsername(request.getUsername()) != null) {
-            throw new BadRequestException("Username already exists");
+        // FIX [M4]: Gunakan existsByX() — lebih efisien, tidak perlu load entitas
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new BadRequestException("Username sudah digunakan");
         }
-        if (userRepository.findByEmail(request.getEmail()) != null) {
-            throw new BadRequestException("Email already registered");
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email sudah terdaftar");
         }
 
         Guest guest = new Guest();
@@ -51,17 +70,17 @@ public class AuthServiceImpl implements AuthService {
         guest.setEmail(request.getEmail());
         guest.setPhone(request.getPhone());
 
-        Guest savedGuest = userRepository.save(guest);
+        Guest savedGuest = (Guest) userRepository.save(guest);
         return buildAuthResponse(savedGuest);
     }
 
     @Override
     public AuthResponseDTO refreshToken(RefreshTokenRequestDTO request) {
         String username = jwtService.refreshAccessToken(request.getRefreshToken());
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UnauthorizedException("User not found");
-        }
+
+        // FIX [M4]: Gunakan Optional
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnauthorizedException("User tidak ditemukan"));
 
         jwtService.invalidateRefreshToken(request.getRefreshToken());
         String newAccessToken = jwtService.generateAccessToken(user.getUsername(), user.getRole());
@@ -81,32 +100,32 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void forgotPassword(ForgotPasswordRequestDTO request) {
-        User user = userRepository.findByEmail(request.getEmail());
-        if (user == null) {
-            throw new ResourceNotFoundException("Email not found in our system");
-        }
+        // FIX [M4]: Gunakan Optional
+        userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Email tidak ditemukan di sistem kami"));
         // Demo mode: password reset link simulation only
+        // TODO: Integrate dengan email service (Spring Mail / SendGrid)
     }
 
     @Override
     public void changePassword(String username, ChangePasswordRequestDTO request) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
+        // FIX [M4]: Gunakan Optional
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan"));
+
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new BadRequestException("Current password is incorrect");
+            throw new BadRequestException("Password lama tidak sesuai");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDTO getProfile(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
+        // FIX [M4]: Gunakan Optional
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan"));
         return UserMapper.toDTO(user);
     }
 

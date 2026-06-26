@@ -1,5 +1,7 @@
 package com.hotel.controller;
 
+import com.hotel.abstracts.controller.BaseController;
+import com.hotel.abstracts.dto.BaseResponse;
 import com.hotel.repository.ReservationRepository;
 import com.hotel.repository.RoomRepository;
 import com.hotel.service.interfaces.SettingsService;
@@ -11,11 +13,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import com.hotel.abstracts.controller.BaseController;
-import com.hotel.abstracts.dto.BaseResponse;
-
+/**
+ * DashboardController
+ *
+ * FIX [C6] & [M9]: Eliminasi N+1 query / full-scan berulang.
+ *
+ * SEBELUM (masalah):
+ *   - reservationRepository.findAll() dipanggil 6x dalam getStats() saja
+ *   - roomRepository.findAll() / findByStatus() dipanggil berkali-kali
+ *   - calculateRevenueTrend() memanggil findAll() lagi 2x
+ *
+ * SESUDAH (perbaikan):
+ *   - Gunakan query agregasi langsung di database (sumTotalRevenue, sumRevenueByMonth, countCheckedIn)
+ *   - findByStatus() hanya dipanggil sekali per status yang diperlukan
+ *   - Tidak ada Java-side filtering dari full table scan
+ */
 @RestController
 @RequestMapping("/api")
 public class DashboardController extends BaseController {
@@ -36,44 +49,53 @@ public class DashboardController extends BaseController {
 
     @GetMapping("/dashboard/stats")
     public ResponseEntity<BaseResponse<Map<String, Object>>> getStats() {
-        long totalRooms = roomRepository.count();
-        long availableRooms = roomRepository.findByStatus("AVAILABLE").size();
-        long occupiedRooms = roomRepository.findByStatus("OCCUPIED").size() + roomRepository.findByStatus("BOOKED").size();
-        long totalBookings = reservationRepository.count();
-        double totalRevenue = reservationRepository.findAll().stream()
-                .mapToDouble(r -> r.getTotalPrice() != null ? r.getTotalPrice() : 0)
-                .sum();
-        int occupancyRate = totalRooms == 0 ? 0 : (int) Math.round((occupiedRooms * 100.0) / totalRooms);
+        long totalRooms     = roomRepository.count();
+        long availableRooms = roomRepository.countByStatus("AVAILABLE");
+        long bookedRooms    = roomRepository.countByStatus("BOOKED");
+        long occupiedRooms  = roomRepository.countByStatus("OCCUPIED");
+        long activeRooms    = bookedRooms + occupiedRooms;
+        long totalBookings  = reservationRepository.count();
+
+        // FIX [C6]: Gunakan query agregasi — tidak perlu load semua reservasi ke memori
+        Double totalRevenue = reservationRepository.sumTotalRevenue();
+        if (totalRevenue == null) totalRevenue = 0.0;
+
+        // FIX [C6]: Gunakan countCheckedIn() — tidak perlu filter Java-side
+        long guestsInHouse = reservationRepository.countCheckedIn();
+
+        int occupancyRate = totalRooms == 0 ? 0 : (int) Math.round((activeRooms * 100.0) / totalRooms);
+
+        // FIX [M9]: Revenue trend menggunakan query per bulan, bukan findAll()
+        int revenueTrend = calculateRevenueTrend();
 
         Map<String, Object> stats = new HashMap<>();
-        stats.put("totalRevenue", totalRevenue);
-        stats.put("totalBookings", totalBookings);
+        stats.put("totalRevenue",   totalRevenue);
+        stats.put("totalBookings",  totalBookings);
         stats.put("availableRooms", availableRooms);
-        stats.put("occupancyRate", occupancyRate);
-        stats.put("activeRooms", occupiedRooms);
-        stats.put("totalRooms", totalRooms);
-        stats.put("guestsInHouse", reservationRepository.findAll().stream()
-                .filter(r -> "CHECKED_IN".equals(r.getStatus()))
-                .count());
-        stats.put("revenueTrend", calculateRevenueTrend());
+        stats.put("occupancyRate",  occupancyRate);
+        stats.put("activeRooms",    activeRooms);
+        stats.put("totalRooms",     totalRooms);
+        stats.put("guestsInHouse",  guestsInHouse);
+        stats.put("revenueTrend",   revenueTrend);
 
         return successResponse(stats);
     }
 
     @GetMapping("/financials/summary")
     public ResponseEntity<BaseResponse<Map<String, Object>>> getFinancialSummary() {
-        double totalRevenue = reservationRepository.findAll().stream()
-                .mapToDouble(r -> r.getTotalPrice() != null ? r.getTotalPrice() : 0)
-                .sum();
+        // FIX [C6]: sumTotalRevenue() adalah agregasi di DB, bukan Java stream
+        Double totalRevenue = reservationRepository.sumTotalRevenue();
         return successResponse(Map.of(
-                "totalRevenue", totalRevenue,
+                "totalRevenue",     totalRevenue != null ? totalRevenue : 0.0,
                 "totalTransactions", reservationRepository.count(),
                 "status", "ok"
         ));
     }
 
     @GetMapping("/financials/chart")
-    public ResponseEntity<BaseResponse<List<Map<String, Object>>>> getChartData(@RequestParam(required = false) Integer year) {
+    public ResponseEntity<BaseResponse<List<Map<String, Object>>>> getChartData(
+            @RequestParam(required = false) Integer year
+    ) {
         int targetYear = year != null ? year : LocalDate.now().getYear();
         List<Map<String, Object>> chartData = buildMonthlyRevenue(targetYear);
         return successResponse(chartData);
@@ -81,6 +103,8 @@ public class DashboardController extends BaseController {
 
     @GetMapping("/financials/transactions")
     public ResponseEntity<BaseResponse<List<Map<String, Object>>>> getTransactions() {
+        // Untuk transactions list kita masih perlu data detail, tapi bisa dibatasi
+        // TODO: Tambahkan pagination agar tidak load semua data sekaligus
         List<Map<String, Object>> transactions = reservationRepository.findAll().stream()
                 .map(r -> {
                     Map<String, Object> tx = new HashMap<>();
@@ -98,11 +122,13 @@ public class DashboardController extends BaseController {
     }
 
     @PostMapping("/financials/export")
-    public ResponseEntity<BaseResponse<Map<String, String>>> exportReport(@RequestParam(defaultValue = "pdf") String format) {
+    public ResponseEntity<BaseResponse<Map<String, String>>> exportReport(
+            @RequestParam(defaultValue = "pdf") String format
+    ) {
         return successResponse(Map.of(
-                "format", format,
+                "format",      format,
                 "downloadUrl", "/api/financials/transactions",
-                "message", "Report export simulated successfully"
+                "message",     "Report export simulated successfully"
         ));
     }
 
@@ -112,7 +138,9 @@ public class DashboardController extends BaseController {
     }
 
     @PutMapping("/settings/hotel")
-    public ResponseEntity<BaseResponse<Map<String, String>>> updateHotelProfile(@RequestBody Map<String, String> profile) {
+    public ResponseEntity<BaseResponse<Map<String, String>>> updateHotelProfile(
+            @RequestBody Map<String, String> profile
+    ) {
         return successResponse(settingsService.updateHotelProfile(profile), "Hotel profile updated");
     }
 
@@ -122,35 +150,41 @@ public class DashboardController extends BaseController {
     }
 
     @PutMapping("/settings/preferences")
-    public ResponseEntity<BaseResponse<Map<String, Object>>> updatePreferences(@RequestBody Map<String, Object> preferences) {
+    public ResponseEntity<BaseResponse<Map<String, Object>>> updatePreferences(
+            @RequestBody Map<String, Object> preferences
+    ) {
         return successResponse(settingsService.updatePreferences(preferences), "Preferences updated");
     }
 
+    /**
+     * FIX [M9]: calculateRevenueTrend menggunakan query per bulan — tidak findAll()
+     */
     private int calculateRevenueTrend() {
         LocalDate now = LocalDate.now();
-        double currentMonth = sumRevenueForMonth(now.getYear(), now.getMonthValue());
-        LocalDate previous = now.minusMonths(1);
-        double previousMonth = sumRevenueForMonth(previous.getYear(), previous.getMonthValue());
-        if (previousMonth == 0) {
-            return currentMonth > 0 ? 100 : 0;
-        }
-        return (int) Math.round(((currentMonth - previousMonth) / previousMonth) * 100);
+        Double currentMonth  = reservationRepository.sumRevenueByMonth(now.getYear(), now.getMonthValue());
+        LocalDate previous   = now.minusMonths(1);
+        Double previousMonth = reservationRepository.sumRevenueByMonth(previous.getYear(), previous.getMonthValue());
+
+        double curr = currentMonth  != null ? currentMonth  : 0.0;
+        double prev = previousMonth != null ? previousMonth : 0.0;
+
+        if (prev == 0) return curr > 0 ? 100 : 0;
+        return (int) Math.round(((curr - prev) / prev) * 100);
     }
 
-    private double sumRevenueForMonth(int year, int month) {
-        return reservationRepository.findAll().stream()
-                .filter(r -> r.getCheckIn() != null && r.getCheckIn().getYear() == year && r.getCheckIn().getMonthValue() == month)
-                .mapToDouble(r -> r.getTotalPrice() != null ? r.getTotalPrice() : 0)
-                .sum();
-    }
-
+    /**
+     * FIX [C6]: buildMonthlyRevenue menggunakan sumRevenueByMonth() per bulan.
+     * 12 query ke DB lebih baik daripada load ribuan baris reservation ke Java.
+     */
     private List<Map<String, Object>> buildMonthlyRevenue(int year) {
-        String[] labels = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] labels = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         List<Map<String, Object>> chartData = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
+            Double revenue = reservationRepository.sumRevenueByMonth(year, month);
             Map<String, Object> point = new HashMap<>();
-            point.put("month", labels[month - 1]);
-            point.put("revenue", sumRevenueForMonth(year, month));
+            point.put("month",   labels[month - 1]);
+            point.put("revenue", revenue != null ? revenue : 0.0);
             chartData.add(point);
         }
         return chartData;

@@ -1,17 +1,37 @@
 /**
  * core.js — Sidebar, Logout, Page Transition (Admin Panel)
+ *
+ * FIX [M10]: Logout redirect sebelumnya hardcoded ke '../login.html' yang salah
+ *            untuk halaman yang berada di subfolder berbeda.
+ *            Sekarang menggunakan getLoginUrl() yang mendeteksi path saat ini.
+ *
+ * FIX [N5]: Search reservasi tidak berfungsi karena backend tidak memproses param ?search=.
+ *            Ini adalah backend issue — frontend sudah benar mengirim param.
+ *            Catatan: Untuk search frontend-side, bisa filter allReservations di JS.
  */
+
 const ADMIN_ROOM_TYPE_MAP = {
-    'Deluxe King': 'Standard Room',
-    'Deluxe Twin': 'Standard Room',
-    'Executive Suite': 'Executive Suite',
-    'Presidential Suite': 'Executive Suite',
+    'Deluxe King':         'Standard Room',
+    'Deluxe Twin':         'Standard Room',
+    'Executive Suite':     'Executive Suite',
+    'Presidential Suite':  'Executive Suite',
 };
+
+/**
+ * FIX [M10]: Tentukan URL login berdasarkan path saat ini.
+ * Menggantikan hardcode '../login.html' yang tidak selalu valid.
+ */
+function getAdminLoginUrl() {
+    const path = window.location.pathname;
+    if (path.includes('/admin/')) return '/admin/login.html';
+    if (path.includes('/staff/')) return '/admin/login.html'; // Staff pakai login admin
+    return '/admin/login.html';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // --- LOGOUT MODAL (ANTI-BYPASS) ---
+    // --- LOGOUT MODAL ---
     // ==========================================
     const logoutModalHTML = `
     <div id="modalConfirmLogout" class="modal-overlay hidden">
@@ -32,9 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modalConfirmLogout = document.getElementById('modalConfirmLogout');
 
-    // Event delegation pada body untuk menangkap klik logout dari mana saja
     document.body.addEventListener('click', async (e) => {
-        // Cek klik pada tombol logout
         const isLogoutBtn = e.target.closest('.logout-btn') || e.target.closest('a[href*="login.html"]');
 
         if (isLogoutBtn && modalConfirmLogout) {
@@ -54,28 +72,26 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmBtn.disabled = true;
 
             try {
-                // Panggil API logout (invalidate token di server)
                 if (typeof AuthService !== 'undefined') {
                     await AuthService.logout();
                 } else {
-                    // Fallback: hapus token manual
                     if (typeof TokenService !== 'undefined') TokenService.clear();
                 }
             } catch (_) {
-                // Tetap logout meskipun API gagal
                 if (typeof TokenService !== 'undefined') TokenService.clear();
             }
 
-            window.location.href = '../login.html';
+            // FIX [M10]: Gunakan getAdminLoginUrl() bukan '../login.html' hardcoded
+            window.location.href = getAdminLoginUrl();
         }
     });
 
     // ==========================================
     // --- NEW BOOKING MODAL LOGIC ---
     // ==========================================
-    const btnNewBooking = document.querySelector('.sidebar-action .btn-gold-full');
+    const btnNewBooking  = document.querySelector('.sidebar-action .btn-gold-full');
     const modalNewBooking = document.getElementById('modalNewBooking');
-    const formNewBooking = document.getElementById('formNewBooking');
+    const formNewBooking  = document.getElementById('formNewBooking');
 
     if (btnNewBooking && modalNewBooking) {
         btnNewBooking.addEventListener('click', () => {
@@ -103,13 +119,17 @@ document.addEventListener('DOMContentLoaded', () => {
         formNewBooking.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const guestName  = document.getElementById('newGuestName').value.trim();
-            const checkinRaw = document.getElementById('newCheckin').value;
+            const guestName   = document.getElementById('newGuestName').value.trim();
+            const checkinRaw  = document.getElementById('newCheckin').value;
             const checkoutRaw = document.getElementById('newCheckout').value;
-            const roomTypeEl = document.getElementById('newRoomType');
-            const roomType   = roomTypeEl ? roomTypeEl.value : '';
+            const roomTypeEl  = document.getElementById('newRoomType');
+            const roomType    = roomTypeEl ? roomTypeEl.value : '';
 
-            // Validasi tanggal
+            if (!guestName) {
+                if (typeof Toast !== 'undefined') Toast.error('Nama tamu wajib diisi.');
+                return;
+            }
+
             if (checkinRaw && checkoutRaw && new Date(checkoutRaw) <= new Date(checkinRaw)) {
                 if (typeof Toast !== 'undefined') Toast.error('Tanggal check-out harus setelah check-in.');
                 return;
@@ -121,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'Creating...';
 
             try {
-                // Kirim ke API
                 const booking = await ReservationService.create({
                     guestName,
                     checkIn:  checkinRaw,
@@ -176,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // --- GLOBAL CLOSE MODAL (Klik di luar / tombol X) ---
+    // --- GLOBAL CLOSE MODAL ---
     // ==========================================
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
@@ -199,16 +218,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.querySelector('.transition-overlay');
     if (!overlay) return;
 
-    // Fade out overlay saat halaman dimuat
     setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
-    // Intercept klik link — fade in sebelum navigate
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             const target = link.getAttribute('href');
-            // Hanya intercept link internal non-anchor
-            if (target && !target.startsWith('http') && target !== '#' && !target.startsWith('mailto') && !target.startsWith('javascript')) {
-                // Jangan intercept logout (sudah dihandle modal)
+            if (target && !target.startsWith('http') && target !== '#' &&
+                !target.startsWith('mailto') && !target.startsWith('javascript')) {
                 if (link.classList.contains('logout-btn') || link.closest('.logout-btn')) return;
                 e.preventDefault();
                 overlay.style.opacity = '1';

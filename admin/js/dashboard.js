@@ -1,6 +1,14 @@
 /**
  * dashboard.js — Admin Room Inventory + Dashboard Stats
- * Mengambil data kamar dan KPI dari API backend.
+ *
+ * FIX [N4]: Kolom harga tabel kamar selalu kosong karena frontend mengakses room.price
+ *           tapi backend mengembalikan field room.basePrice.
+ *           Diperbaiki dengan: room.basePrice || room.price (backward-compatible).
+ *
+ * FIX [N7]: Floor parsing dari roomNumber.charAt(0) tidak reliable.
+ *           Sekarang floor dikirim sebagai integer dari awal.
+ *
+ * FIX [M10]: Logout redirect path dihandle oleh core.js — tidak ada hardcode di sini.
  */
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -14,11 +22,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const stats = await DashboardService.getStats();
 
-            // Update stat cards berdasarkan posisi (Revenue, Occupancy, Active Rooms, Guests)
-            const revenue  = document.querySelector('[data-stat="revenue"] h3') || statCards[0];
+            const revenue   = document.querySelector('[data-stat="revenue"] h3')   || statCards[0];
             const occupancy = document.querySelector('[data-stat="occupancy"] h3') || statCards[1];
-            const rooms    = document.querySelector('[data-stat="rooms"] h3') || statCards[2];
-            const guests   = document.querySelector('[data-stat="guests"] h3') || statCards[3];
+            const rooms     = document.querySelector('[data-stat="rooms"] h3')     || statCards[2];
+            const guests    = document.querySelector('[data-stat="guests"] h3')    || statCards[3];
 
             if (revenue && stats.totalRevenue !== undefined) {
                 const formatted = new Intl.NumberFormat('id-ID', {
@@ -30,25 +37,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 occupancy.innerHTML = `${stats.occupancyRate}%`;
             }
             if (rooms && stats.activeRooms !== undefined) {
-                rooms.innerHTML = `${stats.activeRooms}<span class="muted">/${stats.totalRooms || 150}</span>`;
+                rooms.innerHTML = `${stats.activeRooms}<span class="muted">/${stats.totalRooms || 0}</span>`;
             }
             if (guests && stats.guestsInHouse !== undefined) {
                 guests.textContent = stats.guestsInHouse;
             }
 
-            // Update trend labels jika ada
             if (stats.revenueTrend !== undefined) {
                 const trendEl = document.querySelector('[data-stat="revenue"] .trend');
                 if (trendEl) {
                     const isUp = stats.revenueTrend >= 0;
                     trendEl.className = `trend ${isUp ? 'up' : 'down'}`;
-                    trendEl.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${isUp ? '+' : ''}${stats.revenueTrend}% vs last week`;
+                    trendEl.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${isUp ? '+' : ''}${stats.revenueTrend}% vs bulan lalu`;
                 }
             }
-
         } catch (err) {
-            console.warn('[Dashboard] Stats API not available, using static data:', err.message);
-            // Fallback: biarkan data statis dari HTML tetap tampil
+            console.warn('[Dashboard] Stats API tidak tersedia, menggunakan data statis:', err.message);
         }
     }
 
@@ -56,12 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- LOAD ROOM INVENTORY ---
     // ==========================================
     const tableBody = document.querySelector('.dark-table tbody');
-    let allRooms = []; // Cache data kamar
+    let allRooms = [];
 
     async function loadRooms(page = 1, search = '') {
         if (!tableBody) return;
 
-        // Tampilkan skeleton loading
         tableBody.innerHTML = `
             <tr><td colspan="6" style="text-align:center;padding:40px;color:#555;">
                 <i class="fas fa-circle-notch fa-spin" style="color:#f3c356;margin-right:10px;"></i>
@@ -74,8 +77,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (search) params.search = search;
 
             const response = await RoomService.getAll(params);
-
-            // Backend bisa mengembalikan { data: [...], total, page } atau langsung array
             const rooms = Array.isArray(response) ? response : (response.data || []);
             const total = response.total || rooms.length;
             const totalPages = response.totalPages || 1;
@@ -113,26 +114,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         rooms.forEach(room => {
             const statusClass = (room.status || 'available').toLowerCase();
             const statusLabel = (room.status || 'AVAILABLE').toUpperCase();
-            const price = typeof room.price === 'number'
-                ? new Intl.NumberFormat('id-ID').format(room.price)
-                : (room.price || '-');
+
+            // FIX [N4]: Backend mengembalikan basePrice, bukan price.
+            // Gunakan basePrice sebagai prioritas, fallback ke price untuk backward compat.
+            const priceValue = room.basePrice || room.price;
+            const price = typeof priceValue === 'number'
+                ? new Intl.NumberFormat('id-ID').format(priceValue)
+                : (priceValue || '-');
+
+            const roomNumber = room.roomNumber || room.number;
+            const roomType   = room.roomType   || room.type;
 
             const row = document.createElement('tr');
             if (statusClass === 'maintenance') row.classList.add('row-maintenance');
             row.setAttribute('data-id', room.id);
             row.innerHTML = `
-                <td class="gold-text bold">${room.number || room.roomNumber}</td>
-                <td>${room.type || room.roomType}</td>
+                <td class="gold-text bold">${roomNumber}</td>
+                <td>${roomType}</td>
                 <td><span class="status ${statusClass}">• ${statusLabel}</span></td>
-                <td class="muted">Floor ${room.floor || room.number?.charAt(0) || '-'}</td>
+                <td class="muted">Floor ${room.floor || roomNumber?.charAt(0) || '-'}</td>
                 <td>${price}</td>
                 <td>
                     <button class="btn-detail"
                         data-id="${room.id}"
-                        data-room="${room.number || room.roomNumber}"
-                        data-type="${room.type || room.roomType}"
+                        data-room="${roomNumber}"
+                        data-type="${roomType}"
                         data-status="${statusLabel}"
-                        data-price="${room.price || ''}">
+                        data-price="${priceValue || ''}">
                         <i class="fas fa-pen" style="font-size:10px;margin-right:3px;"></i> Edit
                     </button>
                 </td>
@@ -144,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updatePagination(page, totalPages, total) {
         const showingEl = document.querySelector('.showing-text');
         if (showingEl) {
-            showingEl.textContent = `Showing page ${page} of ${totalPages} (${total} rooms)`;
+            showingEl.textContent = `Menampilkan halaman ${page} dari ${totalPages} (${total} kamar)`;
         }
     }
 
@@ -181,29 +189,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             const roomNumber = inputs[0].value.trim();
             const roomType   = inputs[1].value;
 
-            // Hitung harga default berdasarkan tipe
             let price = 2500000;
-            if (roomType === 'Executive Suite')     price = 5800000;
-            if (roomType === 'Presidential Suite')  price = 15000000;
+            if (roomType === 'Executive Suite')    price = 5800000;
+            if (roomType === 'Presidential Suite') price = 15000000;
 
-            const submitBtn  = formAddRoom.querySelector('button[type="submit"]');
-            const origText   = submitBtn.textContent;
+            // FIX [N4]: Kirim floor sebagai integer, ambil dari digit pertama nomor kamar
+            const floorNumber = parseInt(roomNumber.replace(/\D/g, '').charAt(0) || '1', 10);
+
+            const submitBtn = formAddRoom.querySelector('button[type="submit"]');
+            const origText  = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Saving...';
 
             try {
-                const newRoom = await RoomService.create({
-                    number:   roomNumber,
-                    type:     roomType,
-                    status:   'AVAILABLE',
+                await RoomService.create({
+                    number: roomNumber,
+                    type:   roomType,
+                    status: 'AVAILABLE',
                     price,
-                    floor:    roomNumber.charAt(0),
+                    // FIX [N4]: floor sebagai integer, bukan string charAt(0)
+                    floor: floorNumber,
                 });
 
                 Toast.success('Kamar baru berhasil ditambahkan!');
                 modalAddRoom.classList.add('hidden');
                 formAddRoom.reset();
-                loadRooms(); // Reload tabel
+                loadRooms();
 
             } catch (err) {
                 Toast.error(err.message || 'Gagal menambahkan kamar.');
@@ -253,12 +264,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await RoomService.update(currentEditRoomId, {
                     type:   newType,
                     status: newStatus,
-                    price:  parseFloat(newPrice.replace(/[^0-9.]/g, '')) || 0,
+                    // FIX [N4]: Kirim sebagai number, bukan string
+                    price: parseFloat(newPrice.replace(/[^0-9.]/g, '')) || 0,
                 });
 
                 Toast.success('Detail kamar berhasil diupdate!');
                 modalRoomDetail.classList.add('hidden');
-                loadRooms(); // Reload
+                loadRooms();
 
             } catch (err) {
                 Toast.error(err.message || 'Gagal mengupdate kamar.');
